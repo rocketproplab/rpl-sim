@@ -19,7 +19,8 @@ class FluidToEngineSubsystem {
         // Honestly not sure how we're implementing this, but a vector makes sense to me here.
         // If we got the vector route, we need to include the standard library vector. 
         // I'm not doing it right now because I do not want to push a build task with the paths from my own system to the repo
-        std::vector<bool> solenoids;
+        // two solenoids?
+        std::vector<bool> solenoids = {false, false};
 
         // simulates ignition firing
         void ignite() {

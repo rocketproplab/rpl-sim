@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 class FluidToEngineSubsystem {
     public:
@@ -9,17 +10,23 @@ class FluidToEngineSubsystem {
         }
 
         // thing for actuating solenoids; are we going to make a seperate type here for solenoids? Is there a solenoid library we're using?
-        void setSolenoidState(int index, bool isOpen) {
-            // TODO
-            solenoids[index] = isOpen;
+        bool openSolenoid(int index, bool isOpen) {
+            if (index < solenoids.size()) {
+                solenoids[index] = isOpen;
+            }
+            return solenoids[index];
+        }
+
+        bool getSolenoidState(int index) {
+            return solenoids[index];
         }
 
 
+
+
     private:
-        // Honestly not sure how we're implementing this, but a vector makes sense to me here.
-        // If we got the vector route, we need to include the standard library vector. 
-        // I'm not doing it right now because I do not want to push a build task with the paths from my own system to the repo
-        // two solenoids?
+        // vector; has solenoids for liquid oxygen solenoid and liquid oxidizer solenoid
+        // TODO: make constants outside of this class in order to name our indices
         std::vector<bool> solenoids = {false, false};
 
         // simulates ignition firing

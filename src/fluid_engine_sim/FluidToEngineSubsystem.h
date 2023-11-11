@@ -1,37 +1,29 @@
 #include <iostream>
-#include <vector>
-
+enum FluidToEngineStatus {WAITING_FOR_LAUNCH_COMMAND, SOLENOIDS_OPEN_FUEL_FLOWING, ENGINE_RUNNING, BURNOUT};
 class FluidToEngineSubsystem {
     public:
+        FluidToEngineStatus status;
+        
         // called once per simulation step
-        void process() {
-            // TODO: this function will check timestamps and make sure sstuff isnt breaking
+        void process();
 
-        }
+        // set LNGSolenoid state
+        void setLNGSolenoid(bool isOpen);
 
-        // thing for actuating solenoids; are we going to make a seperate type here for solenoids? Is there a solenoid library we're using?
-        bool openSolenoid(int index, bool isOpen) {
-            if (index < solenoids.size()) {
-                solenoids[index] = isOpen;
-            }
-            return solenoids[index];
-        }
-
-        bool getSolenoidState(int index) {
-            return solenoids[index];
-        }
-
-
-
-
-    private:
-        // vector; has solenoids for liquid oxygen solenoid and liquid oxidizer solenoid
-        // TODO: make constants outside of this class in order to name our indices
-        std::vector<bool> solenoids = {false, false};
+        // set LOXSolenoid state
+        void setLOXSolenoid(bool isOpen);
 
         // simulates ignition firing
-        void ignite() {
-            // TODO
-        }
-    
+        void ignite();
+
+        /*
+            Returns the current status of this task (WAITING_FOR_LAUNCH_COMMAND, SOLENOIDS_OPEN_FUEL_FLOWING, ENGINE_RUNNING, BURNOUT)
+            If the status changed, this function should reflect the current state as of the most recent loop.
+        */
+        FluidToEngineStatus getStatus();
+
+    private:
+        bool LNG_solenoid; // solenoid from Liquid Nitrogen tank to combustion chamber
+        bool LOX_solenoid; // solenoid from Liquid Oxygen tank to combustion chamber
+
 };

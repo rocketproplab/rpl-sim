@@ -7,8 +7,9 @@ test:
 
 
 build:
-	g++ -Isrc/Eigen src/test.cpp -o rpl-sim
+	g++ -std=c++14 -Isrc/Eigen -isystem src/boost_1_82_0 src/test.cpp -o rpl-sim
 
 
 clean:
 	rm -rf build
+	rm rpl-sim

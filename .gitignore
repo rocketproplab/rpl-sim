@@ -1,4 +1,6 @@
 .DS_Store
+src/.DS_Store
+test/.DS_Store
 .vscode
 rpl-sim
 build/*

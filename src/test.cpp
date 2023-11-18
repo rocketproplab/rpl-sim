@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Eigen/Dense"
+#include <boost/numeric/odeint.hpp>
 
 using namespace std;
 using Eigen::Vector3d;

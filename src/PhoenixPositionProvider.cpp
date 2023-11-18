@@ -4,7 +4,10 @@ called once per simulation step.Use this function to update
  the internal position/rotation state.
 */
 
-class PhoenixPosiionProvider{
+#include <boost/numeric/odeint.hpp>
+
+
+class PhoenixPositionProvider{
     public:
         int currCoords[3] = {0, 0, 0};
         int previousRotState;
@@ -20,9 +23,9 @@ class PhoenixPosiionProvider{
             - The process function in our file will be called at each step in the loop
             - 
         */
-       void process(long simTime, long deltaTime){
-
-       }
+        void process(long simTime, long deltaTime){
+            return;
+        }
        
        int* getPosition(){
             return currCoords;

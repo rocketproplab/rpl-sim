@@ -14,7 +14,7 @@ void setup() {
 
 void loop() {
   //Sending serial data through struct
-  Serial.write()
+  Serial.write(sim_struct)
 
 
 

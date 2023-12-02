@@ -4,3 +4,5 @@ test/.DS_Store
 .vscode
 rpl-sim
 build/*
+# ignore Boost Library sourcecode
+src/boost_1_82_0

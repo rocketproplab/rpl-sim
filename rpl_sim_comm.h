@@ -1,6 +1,9 @@
-//Interface for Arduino communication layer
-
-namespace Rocket // TODO: Better Namespace name.
+/* Name: rpl_sim_comm.h
+ * Descriptoion: Interface for Arduino communication layer
+ */
+#ifndef COMM_H_
+#define COMM_H_
+namespace Rocket
 {
   // State - These read state from the hardware (or sim)
   long millis(); // Returns milliseconds since flight computer startup
@@ -23,7 +26,7 @@ namespace Rocket // TODO: Better Namespace name.
   //Xbee radio module
   // TODO: sending and receiving data through radio
 
-  //Get solenoid(1) state: true: open false: close
+  //Get solenoid state: true: open false: close
   bool get_solenoid_state1();
   bool get_solenoid_state2();
 
@@ -34,42 +37,44 @@ namespace Rocket // TODO: Better Namespace name.
   // Commands - These tell the hardware (or sim) to DO something
   void cmd_set_solenoid_actuation(int index, bool isOpen);
   void cmd_ingite_parachute_ematch();
-
+  // TO BE DETERMINED
   //    File System + File object needs to be wrapped.
   //    This might be hard.
-  void cmd_fs_begin();
-  bool cmd_fs_exists(String path);
-  int cmd_fs_mkdir(String path);
-  int cmd_fs_remove(String path);
-  int cmd_fs_rmdir(String path);
-  RocketFile cmd_fs_open(String path, FileMode mode);
+  // void cmd_fs_begin();
+  // bool cmd_fs_exists(String path);
+  // int cmd_fs_mkdir(String path);
+  // int cmd_fs_remove(String path);
+  // int cmd_fs_rmdir(String path);
 
-  class RocketFile {
-    // TODO: Wrap file object API: (https://www.arduino.cc/reference/en/libraries/sd/)
 
-  };
+  //RocketFile cmd_fs_open(String path, FileMode mode);
+  // class RocketFile {
+  //   // TODO: Wrap file object API: (https://www.arduino.cc/reference/en/libraries/sd/)
 
-  struct {
-    //BMP readings
-    float bmp_pressure = get_bmp_pressure();
-    float bmp_altitude = get_bmp_altitude();
-    float bmp_temperature = get_bmp_temperature();
+  // };
 
-    //SD card status
-    bool sd_card_begin = state_sd_card_begin();
-    bool sd_card_open = state_sd_card_open();
+  typedef struct sim_struct {
+  //BMP readings
+  float bmp_pressure;
+  float bmp_altitude;
+  float bmp_temperature;
 
-    //Ematch status
-    bool Ematch_state = get_Ematch_state();
+  //SD card status
+  bool sd_card_begin;
+  bool sd_card_open;
+  //Ematch status
+  bool Ematch_state;
 
-    //Solenoid state
-    bool solenoid1_state = get_solenoid_state1();
-    bool solenoid2_state = get_solenoid_state2();
+  //Solenoid state
+  bool solenoid1_state;
+  bool solenoid2_state;
 
-    //Pressure transducer readings
-    double pressure_transducer1 = get_pressure_transducer1();
-    double pressure_transducer2 = get_pressure_transducer2();
+  //Pressure transducer readings
+  double pressure_transducer1;
+  double pressure_transducer2;
+  } sim_struct_t;
 
-  } sim_struct;
-
+  sim_struct_t sim;
 }
+
+#endif

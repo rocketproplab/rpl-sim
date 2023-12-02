@@ -1,7 +1,7 @@
 /* Name: rpl_sim_comm.cpp
  * Descriptoion: implement the methods defined in rpl_sim_comm.h
  */
-#include "C:/Users/Mark/Documents/GitHub/rpl-sim/rpl_sim_comm.h"
+#include "C:/Users/Mark/Documents/GitHub/rpl-sim/rpl_sim_comm.h" //Change this when running
 //using namespace Rocket;
 
 // State - These read state from the hardware (or sim)

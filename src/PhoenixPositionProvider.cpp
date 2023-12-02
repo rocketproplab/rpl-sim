@@ -13,26 +13,26 @@ called once per simulation step.Use this function to update
 using namespace std;
 using namespace boost::numeric::odeint;
 
+// gravity
+const int g = 9.81; // m/s
+
+// rocket body parameters
+const float DryMass = 54.4218; //kg  (126 lbs)
+const float FuelMass = 20.72917; //kg  (45.7 lbs)
+const float Rocket_Diameter = 0.206756; //m  (8.14 in)
+const float Rocket_Height = 4.64; //m (165 in)
+const float Rocket_WindloadArea = Rocket_Diameter * Rocket_Height;
+const float BurnTime = FuelMass / m_dot; // 13.4308 seconds
+
+// rocket fuel parameters
+const float m_dot = 1.5434; // kg/s, mass flow rate of fuel
+
+// wind parameters
+const float AvgWindSpeed = 10; // m/s, average speed of wind of FAR site
+
+const float rho = 0.7637; // using air density as a constant for now
+
 struct DE_1 {
-    // gravity
-    const int g = 9.81; // m/s
-
-    // rocket body parameters
-    const float DryMass = 54.4218; //kg  (126 lbs)
-    const float FuelMass = 20.72917; //kg  (45.7 lbs)
-    const float Rocket_Diameter = 0.206756; //m  (8.14 in)
-    const float Rocket_Height = 4.64; //m (165 in)
-    const float Rocket_WindloadArea = Rocket_Diameter * Rocket_Height;
-
-    // rocket fuel parameters
-    const float m_dot = 1.5434; // kg/s, mass flow rate of fuel
-    const float BurnTime = FuelMass / m_dot; // 13.4308 seconds
-
-    // wind parameters
-    const float AvgWindSpeed = 10; // m/s, average speed of wind of FAR site
-
-    const float rho = 0.7637; // using air density as a constant for now
-
     // calculate the mass of rocket at time t
     float mass(float t) {
         return DryMass + FuelMass - m_dot * t;

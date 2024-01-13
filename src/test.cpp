@@ -1,6 +1,6 @@
 #include <iostream>
-#include "Eigen/Dense"
-#include "boost_1_82_0/boost/numeric/odeint.hpp"
+#include <Eigen/Dense>
+#include <boost/atomic.hpp>
 
 using namespace std;
 using Eigen::Vector3d;

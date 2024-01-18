@@ -34,6 +34,9 @@ class PhoenixPositionProvider{
 
 
         void createDE1(const stateType& q, stateType& dqdt, const double t);
+        void createDE2(const stateType& q, stateType& dqdt, const double t);
+        void createDE3(const stateType& q, stateType& dqdt, const double t);
+        void createDE4(const stateType& q, stateType& dqdt, const double t);
     public:
         PhoenixPositionProvider();
         void process(long simTime, long deltaTime);

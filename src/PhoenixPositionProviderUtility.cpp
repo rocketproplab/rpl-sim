@@ -22,3 +22,11 @@ float RocketCd(float vy) {
 float RocketDrag(float y, float vy) {
     return 1;
 }
+
+float DrogueDrag(float y, float vy) {
+    return 1;
+}
+
+float MainDrag(float y, float vy) {
+    return 1;
+}

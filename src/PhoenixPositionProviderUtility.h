@@ -33,5 +33,7 @@ float WindLoad(float y);
 float Thrust(float y);
 float RocketCd(float vy);
 float RocketDrag(float y, float vy);
+float DrogueDrag(float y, float vy);
+float MainDrag(float y, float vy);
 
 #endif

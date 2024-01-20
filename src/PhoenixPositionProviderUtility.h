@@ -1,3 +1,4 @@
+# pragma once
 #ifndef PHOENIX_POSITION_PROVIDER_UTILITY_H
 #define PHOENIX_POSITION_PROVIDER_UTILITY_H
 #include "boost_1_82_0/boost/numeric/odeint.hpp"
@@ -41,7 +42,6 @@ float MainDrag(float y, float vy);
 
 typedef boost::array<double, 4> stateType;
 
-vector<stateType> allPositions;
 
 
 void createDE1(const stateType& q, stateType& dqdt, const double t);

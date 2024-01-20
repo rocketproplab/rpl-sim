@@ -1,3 +1,4 @@
+# pragma once
 #ifndef PHOENIX_POSITION_PROVIDER_H
 #define PHOENIX_POSITION_PROVIDER_H
 #include <time.h> // for seeind rand
@@ -7,6 +8,7 @@
 
 using namespace boost::numeric::odeint;
 
+extern vector<stateType> allPositions;
 
 /*
 process(long simTime, long deltaTime): This function is 

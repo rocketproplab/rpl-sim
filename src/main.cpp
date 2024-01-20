@@ -1,4 +1,4 @@
-
+# pragma once
 // #include "boost_1_82_0/boost/numeric/odeint.hpp"
 #include "PhoenixPositionProvider.h"
 

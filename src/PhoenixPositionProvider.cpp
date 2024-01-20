@@ -14,6 +14,7 @@ WHAT WE CURRENTLY UNDERSTAND:
 # include "PhoenixPositionProvider.h"
 
 PhoenixPositionProvider::PhoenixPositionProvider() {
+    cout << "finish" << end;
     srand(time(NULL)); // seed random generator
 
     
@@ -23,9 +24,10 @@ PhoenixPositionProvider::PhoenixPositionProvider() {
 
 
     // Integrate the differential equations using ODEint
-    integrate(createDE1, initialConditionsDE1, t_start, t_end, 0.1, [](const auto& q, const auto t){ 
-        cout << t << "\t" << q[0] << "\t" << q[1] << "\t" << q[2] << "\t" << q[3] << endl;
-    });
+    // integrate(&PhoenixPositionProvider::createDE1, initialConditionsDE1, t_start, t_end, 0.1, [](const auto& q, const auto t){ 
+    //     cout << t << "\t" << q[0] << "\t" << q[1] << "\t" << q[2] << "\t" << q[3] << endl;
+    // });
+
 
 }
 

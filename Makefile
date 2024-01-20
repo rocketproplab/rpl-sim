@@ -7,7 +7,7 @@ test:
 
 
 build:
-	g++ -std=c++14 -Isrc/Eigen -Isrc/boost_1_82_0 src/main.cpp -o rpl-sim
+	g++ -std=c++14 -Isrc/Eigen -Isrc/boost_1_82_0 src/main.cpp src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp -o rpl-sim
 
 
 clean:

@@ -1,4 +1,3 @@
-# pragma once
 #ifndef PHOENIX_POSITION_PROVIDER_H
 #define PHOENIX_POSITION_PROVIDER_H
 #include <time.h> // for seeind rand
@@ -25,17 +24,6 @@ class PhoenixPositionProvider{
         int igniteCounter;
         int destroyed;
 
-
-
-        // typedef boost::array<double, 4> stateType;
-
-        // vector<stateType> allPositions;
-
-
-        // void createDE1(const stateType& q, stateType& dqdt, const double t);
-        // void createDE2(const stateType& q, stateType& dqdt, const double t);
-        // void createDE3(const stateType& q, stateType& dqdt, const double t);
-        // void createDE4(const stateType& q, stateType& dqdt, const double t);
     public:
         PhoenixPositionProvider();
         void process(long simTime, long deltaTime);

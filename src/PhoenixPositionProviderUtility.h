@@ -1,4 +1,3 @@
-# pragma once
 #ifndef PHOENIX_POSITION_PROVIDER_UTILITY_H
 #define PHOENIX_POSITION_PROVIDER_UTILITY_H
 #include "boost_1_82_0/boost/numeric/odeint.hpp"

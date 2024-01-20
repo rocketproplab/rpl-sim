@@ -1,5 +1,3 @@
-# pragma once
-
 /* TO DO
 - make a linear interpolation function
 - make air density a function of altitude (using interpolation or something)

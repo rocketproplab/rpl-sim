@@ -138,6 +138,7 @@ float MainDrag(float y, float vy) {
     return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * MainCd * Main_Area; 
 }
 
+// DE1 works!
 void createDE1(const stateType& q, stateType& dqdt, const double t) {
     // cout << "Stage 1: Lift off, Engine in operation..." << endl;
     dqdt[0] = q[1];
@@ -146,9 +147,9 @@ void createDE1(const stateType& q, stateType& dqdt, const double t) {
     dqdt[3] = 1.0 / mass(t) * (Thrust(q[2]) - mass(t) * g - RocketDrag(q[2], q[3]));
 }
 
-// define De2, de3, de4
+//
 void createDE2(const stateType& q, stateType& dqdt, const double t) {
-    cout << "Stage 2: Engine turns off, continuing upward..." << endl;
+    //cout << "Stage 2: Engine turns off, continuing upward..." << endl;
     dqdt[0] = q[1];
     dqdt[1] = 1.0 / DryMass * WindLoad(q[2]);
     dqdt[2] = q[3];
@@ -156,7 +157,7 @@ void createDE2(const stateType& q, stateType& dqdt, const double t) {
 }
 
 void createDE3(const stateType& q, stateType& dqdt, const double t) {
-    cout << "Stage 3: Drogue parachute deploys at Apogee..." << endl;
+    //cout << "Stage 3: Drogue parachute deploys at Apogee..." << endl;
     dqdt[0] = q[1];
     dqdt[1] = 1.0 / DryMass * WindLoad(q[2]);
     dqdt[2] = q[3];
@@ -164,7 +165,7 @@ void createDE3(const stateType& q, stateType& dqdt, const double t) {
 }
 
 void createDE4(const stateType& q, stateType& dqdt, const double t) {
-    cout << "Stage 4: Main parachute deploys..." <<endl;
+    //cout << "Stage 4: Main parachute deploys..." <<endl;
     dqdt[0] = q[1];
     dqdt[1] = 1.0 / DryMass * WindLoad(q[2]);
     dqdt[2] = q[3];

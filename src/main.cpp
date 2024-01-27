@@ -1,7 +1,7 @@
 #include "PhoenixPositionProvider.h"
 
 int main(){
-    PhoenixPositionProvider ppp;
+    // PhoenixPositionProvider ppp;
     // for (int i = 0; i < 10; i++) {
     //     cout << -1 + 2 * (rand() / static_cast<double>(RAND_MAX)) << endl;
     // }
@@ -29,5 +29,13 @@ int main(){
     // cout << RocketDrag(3003.1, 378.8) << endl;
     // cout << RocketDrag(2541.2, 356.5) << endl;
     // cout << RocketDrag(2.0, 9.2) << endl;
+
+    stateType testConditions = {6.03593, -0.010735, 8225.07, 4.90564};
+
+    integrate(createDE3, testConditions, BurnTime+30, BurnTime+430, 0.1, [](const auto& q, const auto t){ 
+        cout << t << "\t" << q[0] << "\t" << q[1] << "\t" << q[2] << "\t" << q[3] << endl;
+    });
 }
+
+
 

@@ -34,7 +34,7 @@ const float Main_Area = 3.14159265358979323846 * pow(Main_Diameter / 2, 2);
 
 // rocket fuel parameters
 const float m_dot = 1.2579; // kg/s, mass flow rate of fuel
-const float BurnTime = FuelMass / m_dot; // 13.4308 seconds
+const double BurnTime = FuelMass / m_dot; // 13.4308 seconds
 const double start_t = 0.0;
 const double end_t = BurnTime;
 

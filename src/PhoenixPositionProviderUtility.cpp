@@ -91,19 +91,25 @@ float mass(float t) {
 }
 // calculate the mass of rocket at time t
 
-float TempWindload(float y) {
+float TempWindLoad(float y) {
     int WindOffset = (rand() % 7) - 3; // force range to [-3, 3]
-    return 1 / 2 * AirDensityFromAltitude(y) * pow(AvgWindSpeed + WindOffset, 2) * Rocket_WindloadArea;
+    return 0.5 * AirDensityFromAltitude(y) * pow((AvgWindSpeed + WindOffset), 2) * Rocket_WindloadArea;
 }
 
-float WindLoad(float y) {
-    vector<float> random_offsets;
+vector<float> GenerateWindLoadData() {
     vector<float> windloads;
-    for (int i = 0; i < 10002; i++) {
-        random_offsets.push_back(-1 + 2 * (rand() / static_cast<double>(RAND_MAX)));
-        windloads.push_back(TempWindLoad(i));
+    for (int alt = 0; alt < 10001; alt++) {
+        float offset = -1 + 2 * (rand() / static_cast<double>(RAND_MAX));
+        // cout << TempWindLoad(alt) << endl;
+        windloads.push_back(offset * TempWindLoad(alt));
     }
-    return 1.0;
+    return windloads;
+}
+
+vector<float> windloads = GenerateWindLoadData();
+
+float WindLoad(float y) {
+    return linearInterp(y, altitudes, windloads);
 }
 
 float Thrust(float y) {

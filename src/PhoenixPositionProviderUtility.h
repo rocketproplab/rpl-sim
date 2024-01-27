@@ -46,6 +46,7 @@ const float AvgWindSpeed = 10; // m/s, average speed of wind of FAR site
 
 float mass(float t);
 float TempWindLoad(float y);
+vector<float> GenerateWindLoadData();
 float WindLoad(float y);
 float Thrust(float y);
 float RocketCd(float vy);

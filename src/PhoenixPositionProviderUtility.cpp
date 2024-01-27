@@ -38,6 +38,9 @@ vector<float> pressure = atmos_data[2];
 vector<float> rho = atmos_data[3];
 
 float linearInterp(float x, vector<float> all_x, vector<float> all_y) {
+    if (all_x[0] == x) {
+        return all_y[0];
+    }
     int pos = 0;
     while (all_x[pos] < x) {
         pos++;
@@ -61,7 +64,7 @@ vector<float> getAltitudes(){
 
 vector<float> altitudes = getAltitudes();
 
-float AirDensityFromAltitude(float x){
+float AirDensityFromAltitude(float x){ // looks correct
     return linearInterp(x, altitudes, rho);
 }
 
@@ -74,6 +77,8 @@ vector<float> convert_to_ms(vector<float> mach_data){
         num = num*343;
         toReturn.push_back(num);
     }
+    // cout << toReturn[0] << endl;
+    // cout << toReturn[99] << endl;
     return toReturn;
 }
 
@@ -112,29 +117,29 @@ float WindLoad(float y) {
     return linearInterp(y, altitudes, windloads);
 }
 
-float Thrust(float y) {
+float Thrust(float y) { // looks correct
     return linearInterp(y, height, thrust);
 }
 
-float RocketCd(float vy) {
+float RocketCd(float vy) { // looks good
     return linearInterp(vy, mach_num, drag_coef);
 }
 
 
-float RocketDrag(float y, float vy) {
-    return 1/2 * AirDensityFromAltitude(y) * pow(vy, 2) * RocketCd(vy) * Rocket_Cross_Section_Area;
+float RocketDrag(float y, float vy) { // looks good
+    return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * RocketCd(vy) * Rocket_Cross_Section_Area;
 }
 
 float DrogueDrag(float y, float vy) {
-    return 1/2 * AirDensityFromAltitude(y) * pow(vy, 2) * DrogueCd * Drogue_Area; 
+    return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * DrogueCd * Drogue_Area; 
 }
 
 float MainDrag(float y, float vy) {
-    return 1/2 * AirDensityFromAltitude(y) * pow(vy, 2) * MainCd * Main_Area; 
+    return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * MainCd * Main_Area; 
 }
 
 void createDE1(const stateType& q, stateType& dqdt, const double t) {
-    cout << "Stage 1: Lift off, Engine in operation..." << endl;
+    // cout << "Stage 1: Lift off, Engine in operation..." << endl;
     dqdt[0] = q[1];
     dqdt[1] = 1.0 / mass(t) * WindLoad(q[2]);
     dqdt[2] = q[3];

@@ -35,6 +35,11 @@ int main(){
     // integrate(createDE3, testConditions, BurnTime+30, BurnTime+430, 0.1, [](const auto& q, const auto t){ 
     //     cout << t << "\t" << q[0] << "\t" << q[1] << "\t" << q[2] << "\t" << q[3] << endl;
     // });
+
+    // vector<float> a = getAltitudes();
+    // vector<float> b = getAltitudes();
+
+    // cout << linearInterp(-1, a, b) << endl;
 }
 
 

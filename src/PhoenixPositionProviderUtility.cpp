@@ -40,17 +40,25 @@ vector<float> rho = atmos_data[3];
 float linearInterp(float x, vector<float> all_x, vector<float> all_y) {
     if (all_x[0] == x) {
         return all_y[0];
+    } else if (all_x[0] < x) {
+        int pos = 0;
+        while (all_x[pos] < x) {
+            pos++;
+        }
+        float x1 = all_x[pos - 1];
+        float x2 = all_x[pos];
+        float y1 = all_y[pos - 1];
+        float y2 = all_y[pos];
+        float slope = (y2 - y1) / (x2 - x1);
+        return y1 + (x - x1) * slope;
+    } else { // if we are extrapolating behind all_x (only consider behind because we never extrapolate over)
+        float x1 = all_x[1];
+        float x2 = all_x[0];
+        float y1 = all_y[1];
+        float y2 = all_y[0];
+        float slope = (y2 - y1) / (x2 - x1);
+        return y1 + (x - x1) * slope;
     }
-    int pos = 0;
-    while (all_x[pos] < x) {
-        pos++;
-    }
-    float x1 = all_x[pos - 1];
-    float x2 = all_x[pos];
-    float y1 = all_y[pos - 1];
-    float y2 = all_y[pos];
-    float slope = (y2 - y1) / (x2 - x1);
-    return y1 + (x - x1) * slope;
 }
 
 //put airDensityFromAltitude function here
@@ -114,9 +122,9 @@ vector<float> GenerateWindLoadData() {
 vector<float> windloads = GenerateWindLoadData();
 
 float WindLoad(float y) {
-    cout << "abc" << endl;
+    // cout << "abc" << endl;
     float a = linearInterp(y, altitudes, windloads);
-    cout << "zxy" << endl;
+    // cout << "zxy" << endl;
     return a;
 }
 

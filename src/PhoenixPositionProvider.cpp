@@ -33,7 +33,7 @@ PhoenixPositionProvider::PhoenixPositionProvider() {
 
     // // cout << initialConditions[0] << "\t" << initialConditions[1] << "\t" << initialConditions[2] << "\t" << initialConditions[3] << endl;
 
-    integrate_const(stepper, createDE4, initialConditions, BurnTime +430 , BurnTime+1030, timestep, [](const auto& q, const auto t){ 
+    integrate_const(stepper, createDE4, initialConditions, BurnTime +430 , BurnTime+608, timestep, [](const auto& q, const auto t){ 
         cout << t << "\t" << q[0] << "\t" << q[1] << "\t" << q[2] << "\t" << q[3] << endl;
     });
     cout << "done" << endl;

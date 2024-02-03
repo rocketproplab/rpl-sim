@@ -55,6 +55,7 @@ float RocketDrag(float y, float vy);
 float DrogueDrag(float y, float vy);
 float MainDrag(float y, float vy);
 vector<vector<float>> parseFile(const string& filename);
+vector<float> getAltitudes();
 float linearInterp(float x, vector<float> all_x, vector<float> all_y);
 float splineInterp(float x, vector<float> all_x, vector<float> all_y);
 float AirDensityFromAltitude(float x);

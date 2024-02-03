@@ -1,6 +1,7 @@
 #ifndef PHOENIX_POSITION_PROVIDER_UTILITY_H
 #define PHOENIX_POSITION_PROVIDER_UTILITY_H
 #include "boost_1_82_0/boost/numeric/odeint.hpp"
+#include "spline-master/src/spline.h"
 #include <cmath>
 #include <vector>
 #include<sstream>
@@ -55,6 +56,7 @@ float DrogueDrag(float y, float vy);
 float MainDrag(float y, float vy);
 vector<vector<float>> parseFile(const string& filename);
 float linearInterp(float x, vector<float> all_x, vector<float> all_y);
+float splineInterp(float x, vector<float> all_x, vector<float> all_y);
 float AirDensityFromAltitude(float x);
 
 

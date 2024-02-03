@@ -114,7 +114,10 @@ vector<float> GenerateWindLoadData() {
 vector<float> windloads = GenerateWindLoadData();
 
 float WindLoad(float y) {
-    return linearInterp(y, altitudes, windloads);
+    cout << "abc" << endl;
+    float a = linearInterp(y, altitudes, windloads);
+    cout << "zxy" << endl;
+    return a;
 }
 
 float Thrust(float y) { // looks correct

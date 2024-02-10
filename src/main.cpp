@@ -2,6 +2,10 @@
 
 int main(){
     PhoenixPositionProvider ppp;
+    ppp.process(0, 0.0001);
+    ppp.process(0.0001, 0.5);
+    ppp.ignite();
+    ppp.process(0.5001, 10);
     // for (int i = 0; i < 10; i++) {
     //     cout << -1 + 2 * (rand() / static_cast<double>(RAND_MAX)) << endl;
     // }

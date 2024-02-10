@@ -182,3 +182,13 @@ void createDE4(const stateType& q, stateType& dqdt, const double t) {
     dqdt[2] = q[3];
     dqdt[3] = 1.0 / DryMass * (RocketDrag(q[2], abs(q[3])) + MainDrag(q[2], abs(q[3])) - DryMass*g);
 }
+
+push_back_state_and_time::push_back_state_and_time(std::vector<stateType>& states, std::vector<double>& times)
+    : m_states(states), m_times(times) {}
+
+
+void push_back_state_and_time::operator()(const stateType& x, double t)
+{
+    m_states.push_back(x);
+    m_times.push_back(t);
+}

@@ -70,4 +70,13 @@ void createDE2(const stateType& q, stateType& dqdt, const double t);
 void createDE3(const stateType& q, stateType& dqdt, const double t);
 void createDE4(const stateType& q, stateType& dqdt, const double t);
 
+struct push_back_state_and_time
+{
+    std::vector<stateType>& m_states;
+    std::vector<double>& m_times;
+
+    push_back_state_and_time(std::vector<stateType>& states, std::vector<double>& times);
+    void operator()(const stateType& x, double t);
+};
+
 #endif

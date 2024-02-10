@@ -7,7 +7,6 @@
 
 using namespace boost::numeric::odeint;
 
-extern vector<stateType> allPositions;
 
 /*
 process(long simTime, long deltaTime): This function is 
@@ -16,18 +15,35 @@ called once per simulation step.Use this function to update
 */
 class PhoenixPositionProvider{
     private:
-        const float dt = 0.001;
+        const double dt = 0.01; // must be a double for odeint to work
 
-        int currCoords[3] = {0, 0, 0};
+        // x, y, z position
+        double currCoords[3] = {0, 0, 0};
         int previousRotState;
         int updatedRotState;
         int igniteCounter;
         int destroyed;
+        runge_kutta4<stateType> stepper;
+        stateType initialConditions;
+
 
     public:
+        enum class State {
+            PRE_FLIGHT,
+            BURN,
+            COAST,
+            DROGUE,
+            CHUTE
+        };
+
         PhoenixPositionProvider();
-        void process(long simTime, long deltaTime);
-        int* getPosition();
+        void process(double simTime, double deltaTime);
+        double* getPosition();
+        void ignite();
+        double currentTime;
+        State rocketState;
+        vector<double> times;
+        vector<stateType> allPositions;
 };
 
 #endif

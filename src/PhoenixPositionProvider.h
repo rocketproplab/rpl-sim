@@ -8,11 +8,10 @@
 using namespace boost::numeric::odeint;
 
 
-/*
-process(long simTime, long deltaTime): This function is 
-called once per simulation step.Use this function to update
- the internal position/rotation state.
-*/
+const float drogueMaxDeploymentSpeed = 1000; // units *should be* m/s, ask recovery people about this
+const float chuteMaxDeploymentSpeed = 1000; // and this
+
+
 class PhoenixPositionProvider{
     private:
         const double dt = 0.01; // must be a double for odeint to work
@@ -22,10 +21,11 @@ class PhoenixPositionProvider{
         int previousRotState;
         int updatedRotState;
         int igniteCounter;
+        int chuteCounter;
+        int drogueCounter;
         int destroyed;
         runge_kutta4<stateType> stepper;
-        stateType initialConditions;
-
+        stateType currentConditions;
 
     public:
         enum class State {
@@ -40,6 +40,8 @@ class PhoenixPositionProvider{
         void process(double simTime, double deltaTime);
         double* getPosition();
         void ignite();
+        void chute();
+        void drogue();
         double currentTime;
         State rocketState;
         vector<double> times;

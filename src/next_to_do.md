@@ -1,0 +1,3 @@
+- test serial send from PC to Arduino
+- test Arduino send to PC
+- implement virual Barometer, GPS, Radio

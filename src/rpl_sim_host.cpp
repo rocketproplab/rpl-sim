@@ -1,8 +1,7 @@
-/* Name: rpl_sim_comm.cpp
- * Descriptoion: implement the methods defined in rpl_sim_comm.h
+/* Name: rpl_sim_host.cpp
+ * Descriptoion: implmentation of the rpl host
  */
-#include "C:/Users/Mark/Documents/GitHub/rpl-sim/rpl_sim_comm.h" //Change this when running
-//using namespace Rocket;
+#include "rpl_sim_host.h" 
 
 // State - These read state from the hardware (or sim)
 
@@ -21,6 +20,8 @@ long micros() {
 
 //BMP readings
 float get_bmp_pressure() {
+
+
     return 0;
 }
 float get_bmp_altitude() {
@@ -28,22 +29,6 @@ float get_bmp_altitude() {
 }
 float get_bmp_temperature(){
     return 0;
-}
-
-//SD card status
-//sd_card_begin: true: hardware init success, false: init fail 
-bool get_sd_card_begin() {
-    return false;
-}
-
-//sd_card_open: true: file open success, false: file open false
-bool get_sd_card_open() {
-    return false;
-}
-
-//Ematch status: true: high, false: low
-bool get_Ematch_state() {
-    return false;
 }
 
 //Xbee radio module
@@ -67,14 +52,9 @@ double get_pressure_transducer2() {
     return 0;
 }
 
-// Commands - These tell the hardware (or sim) to DO something
-void cmd_set_solenoid_actuation(int index, bool isOpen){
+
 
 }
-void cmd_ingite_parachute_ematch() {
-
-}
-
 // TO BE DETERMINED
 //    File System + File object needs to be wrapped.
 //    This might be hard.
@@ -83,5 +63,3 @@ void cmd_ingite_parachute_ematch() {
 // int cmd_fs_mkdir(String path);
 // int cmd_fs_remove(String path);
 // int cmd_fs_rmdir(String path);
-
-}

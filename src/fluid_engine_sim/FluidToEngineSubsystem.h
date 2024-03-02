@@ -21,6 +21,8 @@ class FluidToEngineSubsystem {
         // set solenoid state
         void setSolenoidState(Solenoid s, bool isOpen);
 
+        bool getSolenoidState(Solenoid s);
+
         // simulates ignition firing
         void ignite();
 

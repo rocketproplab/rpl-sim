@@ -24,37 +24,38 @@ TEST_CASE("Process Loop Run Normal", "Normal") {
 	FluidToEngineSubsystem fs {};
 	double solenoid_timer {0.0};
 	double target {300.0};
-	while (true) {
+	while (solenoid_timer < 201) {
 		REQUIRE_NOTHROW([&](){ // C++ anonymous function
-			fs.process(solenoid_timer, target);
-			solenoid_timer++;
-			if (solenoid_timer == 200.0) fs.ignite();
-		});
+			if (solenoid_timer == 200) {
+				fs.ignite();
+			}else {
+				fs.process(solenoid_timer, target);
+			}
+		}()); // make sure to actually call lambda function immediately lolz
+		solenoid_timer++;
+	}
+	while (solenoid_timer < target) {
+		REQUIRE(fs.getStatus() == FluidToEngineStatus::ENGINE_RUNNING);
+		REQUIRE(fs.getSolenoidState(Solenoid::LNG_solenoid) == true);
+		REQUIRE(fs.getSolenoidState(Solenoid::LOX_solenoid) == true);
+
+		solenoid_timer++;
 	}
 }
 
 TEST_CASE("Process Loop Run Bad Engine", "Engine never ignites") {
 	FluidToEngineSubsystem fs {};
-	double solenoid_timer {0.0};
+	double solenoid_timer {301.0};
 	double target {300.0};
-	while (true) {
-		CHECK_THROWS_AS(fs.process(solenoid_timer, target), std::runtime_error);
-		solenoid_timer++;
-	}
+	CHECK_THROWS_AS(fs.process(solenoid_timer, target), std::runtime_error);
 }
 
 TEST_CASE("Process Loop Run Explode", "Engine explodes cuz someone closed solenoid while it was running") {
 	FluidToEngineSubsystem fs {};
 	double solenoid_timer {0.0};
 	double target {300.0};
-	while (true) {
-		REQUIRE_NOTHROW([&](){ // C++ anonymous function
-			fs.process(solenoid_timer, target);
-			solenoid_timer++;
-			if (solenoid_timer == 200.0) fs.ignite();
-		});
-	}
-
+	fs.process(solenoid_timer, target);
+	fs.ignite();
 	fs.setSolenoidState(Solenoid::LNG_solenoid, false);
 	CHECK_THROWS_AS(fs.process(solenoid_timer, target), std::runtime_error);
 }

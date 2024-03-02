@@ -3,13 +3,13 @@
 // process loop; if something goes wrong, catch error and crash program
 void FluidToEngineSubsystem::process(double solenoid_to_engine_run_timer, double target) {
     // try { // DO not want to catch errors yet, or even here. Want to catch errors in calling function.
-    if (getStatus() == FluidToEngineStatus::WAITING_FOR_LAUNCH_COMMAND) {
+    if (status == FluidToEngineStatus::WAITING_FOR_LAUNCH_COMMAND) {
         setSolenoidState(Solenoid::LNG_solenoid, true);
         setSolenoidState(Solenoid::LOX_solenoid, true);
         setStatus(FluidToEngineStatus::SOLENOIDS_OPEN_FUEL_FLOWING);
     }
 
-    if (getStatus() == FluidToEngineStatus::SOLENOIDS_OPEN_FUEL_FLOWING) {
+    if (status == FluidToEngineStatus::SOLENOIDS_OPEN_FUEL_FLOWING) {
         if (solenoid_to_engine_run_timer > target) {
             throw std::runtime_error("Window closed");
         }
@@ -28,6 +28,11 @@ void FluidToEngineSubsystem::process(double solenoid_to_engine_run_timer, double
 
 void FluidToEngineSubsystem::setSolenoidState(Solenoid s, bool isOpen) {
     solenoids[(int)s] = isOpen;
+}
+
+bool FluidToEngineSubsystem::getSolenoidState(Solenoid s) {
+    if ((int)s >= solenoids.size()) throw std::out_of_range("Index out of bounds exception");
+    return (solenoids[int(s)]);
 }
 
 void FluidToEngineSubsystem::setStatus(FluidToEngineStatus new_status) {

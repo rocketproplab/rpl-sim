@@ -24,10 +24,10 @@ class PhoenixPositionProvider{
         int chuteCounter;
         int drogueCounter;
         int destroyed;
+        double ignitionTime;
         runge_kutta4<stateType> stepper;
         stateType currentConditions;
 
-    public:
         enum class State {
             PRE_FLIGHT,
             BURN,
@@ -36,12 +36,14 @@ class PhoenixPositionProvider{
             CHUTE
         };
 
+    public:
         PhoenixPositionProvider();
         void process(double simTime, double deltaTime);
         double* getPosition();
+        double* getRotation();
         void ignite();
-        void chute();
         void drogue();
+        void chute();
         double currentTime;
         State rocketState;
         vector<double> times;

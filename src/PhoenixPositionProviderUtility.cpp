@@ -2,7 +2,6 @@
 
 //the first row of atmosisa csv file is T, second is a, third is P, fourth is rho
 
-
 vector<vector<float>> parseFile(const string& filename){
     vector<vector<float>> result; // Vector to store the final result
 
@@ -113,17 +112,25 @@ vector<float> GenerateWindLoadData() {
     vector<float> windloads;
     for (int alt = 0; alt < 10001; alt++) {
         float offset = -1 + 2 * (rand() / static_cast<double>(RAND_MAX));
-        // cout << TempWindLoad(alt) << endl;
+        // cout << offset * TempWindLoad(alt) << endl;
         windloads.push_back(offset * TempWindLoad(alt));
     }
     return windloads;
 }
 
-vector<float> windloads = GenerateWindLoadData();
+vector<float> windloads_x = GenerateWindLoadData();
+vector<float> windloads_y = GenerateWindLoadData();
 
-float WindLoad(float y) {
+float WindLoad_x(float y) {
     // cout << "abc" << endl;
-    float a = linearInterp(y, altitudes, windloads);
+    float a = linearInterp(y, altitudes, windloads_x);
+    // cout << "zxy" << endl;
+    return a;
+}
+
+float WindLoad_y(float y) {
+    // cout << "abc" << endl;
+    float a = linearInterp(y, altitudes, windloads_y);
     // cout << "zxy" << endl;
     return a;
 }
@@ -149,38 +156,55 @@ float MainDrag(float y, float vy) {
     return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * MainCd * Main_Area; 
 }
 
+// stateType = {x pos, x vel, y pos, y vel, z pos, z vel}
+
 // DE1 works!
 void createDE1(const stateType& q, stateType& dqdt, const double t) {
     // cout << "Stage 1: Lift off, Engine in operation..." << endl;
+    // dqdt[0] = q[1];
+    // dqdt[1] = 1.0 / mass(t) * WindLoad_x(q[4]);
+    // dqdt[2] = q[3];
+    // dqdt[3] = 1.0 / mass(t) * WindLoad_y(q[4]);
+    // dqdt[4] = q[5];
+    // dqdt[5] = 1.0 / mass(t) * (Thrust(q[4]) - mass(t) * g - RocketDrag(q[4], q[5]));
+
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / mass(t) * WindLoad(q[2]);
+    dqdt[1] = 1.0 / mass(t) * WindLoad_x(q[2]);
     dqdt[2] = q[3];
     dqdt[3] = 1.0 / mass(t) * (Thrust(q[2]) - mass(t) * g - RocketDrag(q[2], q[3]));
+    dqdt[4] = q[5];
+    dqdt[5] = 1.0 / mass(t) * WindLoad_y(q[2]);
 }
 
 //
 void createDE2(const stateType& q, stateType& dqdt, const double t) {
     //cout << "Stage 2: Engine turns off, continuing upward..." << endl;
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / DryMass * WindLoad(q[2]);
+    dqdt[1] = 1.0 / mass(t) * WindLoad_x(q[2]);
     dqdt[2] = q[3];
     dqdt[3] = 1.0 / DryMass * (-DryMass * g - RocketDrag(q[2], q[3]));
+    dqdt[4] = q[5];
+    dqdt[5] = 1.0 / mass(t) * WindLoad_y(q[2]);
 }
 
 void createDE3(const stateType& q, stateType& dqdt, const double t) {
     //cout << "Stage 3: Drogue parachute deploys at Apogee..." << endl;
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / DryMass * WindLoad(q[2]);
+    dqdt[1] = 1.0 / mass(t) * WindLoad_x(q[2]);
     dqdt[2] = q[3];
     dqdt[3] = 1.0 / DryMass * (RocketDrag(q[2], abs(q[3])) + DrogueDrag(q[2], abs(q[3])) - DryMass*g);
+    dqdt[4] = q[5];
+    dqdt[5] = 1.0 / mass(t) * WindLoad_y(q[2]);
 }
 
 void createDE4(const stateType& q, stateType& dqdt, const double t) {
     //cout << "Stage 4: Main parachute deploys..." <<endl;
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / DryMass * WindLoad(q[2]);
+    dqdt[1] = 1.0 / mass(t) * WindLoad_x(q[2]);
     dqdt[2] = q[3];
     dqdt[3] = 1.0 / DryMass * (RocketDrag(q[2], abs(q[3])) + MainDrag(q[2], abs(q[3])) - DryMass*g);
+    dqdt[4] = q[5];
+    dqdt[5] = 1.0 / mass(t) * WindLoad_y(q[2]);
 }
 
 push_back_state_and_time::push_back_state_and_time(std::vector<stateType>& states, std::vector<double>& times)

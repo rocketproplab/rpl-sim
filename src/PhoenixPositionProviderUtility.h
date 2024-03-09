@@ -35,9 +35,7 @@ const float Main_Area = 3.14159265358979323846 * pow(Main_Diameter / 2, 2);
 
 // rocket fuel parameters
 const float m_dot = 1.2579; // kg/s, mass flow rate of fuel
-const double BurnTime = FuelMass / m_dot; // 13.4308 seconds
-const double start_t = 0.0;
-const double end_t = BurnTime;
+const double burnTime = FuelMass / m_dot; // 13.4308 seconds
 
 // wind parameters
 const float AvgWindSpeed = 10; // m/s, average speed of wind of FAR site
@@ -48,7 +46,8 @@ const float AvgWindSpeed = 10; // m/s, average speed of wind of FAR site
 float mass(float t);
 float TempWindLoad(float y);
 vector<float> GenerateWindLoadData();
-float WindLoad(float y);
+float WindLoad_x(float y);
+float WindLoad_y(float y);
 float Thrust(float y);
 float RocketCd(float vy);
 float RocketDrag(float y, float vy);
@@ -61,7 +60,7 @@ float splineInterp(float x, vector<float> all_x, vector<float> all_y);
 float AirDensityFromAltitude(float x);
 
 
-typedef boost::array<double, 4> stateType;
+typedef boost::array<double, 6> stateType;
 
 
 

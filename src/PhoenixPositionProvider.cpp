@@ -95,6 +95,10 @@ void PhoenixPositionProvider::ignite(){
 }
 
 void PhoenixPositionProvider::drogue(){
+    if(igniteCounter == 0){
+        throw runtime_error("Error: Drogue deployment before ignition");
+    }
+    
     if (drogueCounter != 0) {
         throw runtime_error("Error: PhoenixPositionProvider::drogue() was called twice.");
     }
@@ -108,6 +112,9 @@ void PhoenixPositionProvider::drogue(){
 }
 
 void PhoenixPositionProvider::chute(){
+    if(drogueCounter == 0){
+        throw runtime_error("Error: Chute deployed before drogue deployment");
+    }
     if (chuteCounter != 0) {
         throw runtime_error("Error: PhoenixPositionProvider::chute() was called twice.");
     }

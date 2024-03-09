@@ -31,7 +31,7 @@ vector<vector<float>> parseFile(const string& filename){
     return result;
 }
 
-vector<vector<float>> atmos_data = parseFile("src/atmosisa.csv");
+vector<vector<float>> atmos_data = parseFile("atmosisa.csv");
 vector<float> temperature = atmos_data[0];
 vector<float> speed_of_sound = atmos_data[1];
 vector<float> pressure = atmos_data[2];
@@ -90,11 +90,11 @@ vector<float> convert_to_ms(vector<float> mach_data){
     return toReturn;
 }
 
-vector<vector<float>> mach_drag_data = parseFile("src/mach_vs_cd.csv");
+vector<vector<float>> mach_drag_data = parseFile("mach_vs_cd.csv");
 vector<float> mach_num = convert_to_ms(mach_drag_data[0]);
 vector<float> drag_coef = mach_drag_data[1];
 
-vector<vector<float>> thrust_curve = parseFile("src/thrust_curve.csv");
+vector<vector<float>> thrust_curve = parseFile("thrust_curve.csv");
 vector<float> height = thrust_curve[0];
 vector<float> thrust = thrust_curve[1];
 

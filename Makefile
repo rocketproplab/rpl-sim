@@ -3,11 +3,14 @@
 test:
 	cmake -S . -B build
 	cmake --build build
+	cp src/atmosisa.csv build
+	cp src/mach_vs_cd.csv build
+	cp src/thrust_curve.csv build
 	cd build && ./tests && cd ..
 
 
 build:
-	g++ -std=c++14 -Isrc/Eigen -Isrc/boost_1_82_0 src/main.cpp src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp -o rpl-sim
+	g++ -std=c++14 -Isrc/Eigen /usr/local/Cellar/boost/1.66.0 src/test.cpp src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp -o rpl-sim
 
 
 clean:

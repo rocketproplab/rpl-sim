@@ -20,7 +20,6 @@ class PhoenixPositionProvider{
         double currCoords[3] = {0, 0, 0};
         int previousRotState;
         int updatedRotState;
-        int igniteCounter;
         int chuteCounter;
         int drogueCounter;
         int destroyed;
@@ -28,6 +27,8 @@ class PhoenixPositionProvider{
         stateType currentConditions;
 
     public:
+        int igniteCounter;
+        
         enum class State {
             PRE_FLIGHT,
             BURN,
@@ -46,6 +47,7 @@ class PhoenixPositionProvider{
         State rocketState;
         vector<double> times;
         vector<stateType> allPositions;
+        State getStatus();
 };
 
 #endif

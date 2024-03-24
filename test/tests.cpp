@@ -94,7 +94,7 @@ TEST_CASE("Testing if y-vel decreases && y-pos increases in COAST stage") {
     REQUIRE(burning[3] > coasting[3]); // y_vel while burn > y_vel during coast
 }
 
-// (8.0) 
+// (9.0) 
 TEST_CASE("Testing if y_pos/vel make sense in CHUTE stage") {
     PhoenixPositionProvider ppp {};
     ppp.ignite();
@@ -119,7 +119,7 @@ TEST_CASE("Testing if y_pos/vel make sense in CHUTE stage") {
     REQUIRE(drogue2[2] > drogue3[2]); // 110.01 seconds after drogue, rocket should be closer to the ground than 110 seconds after drogue
     REQUIRE(abs(drogue2[3]) > abs(drogue3[3])); // 110.01 seconds after drogue, rocket should be slower than 110 seconds after drogue
 }
-
+// (10.0)
 TEST_CASE("Testing Maximum Deployment Speed for Drogue") {
     PhoenixPositionProvider ppp {};
     ppp.ignite();
@@ -127,12 +127,13 @@ TEST_CASE("Testing Maximum Deployment Speed for Drogue") {
     ppp.process(10); // 10 seconds after engine cutoff, velocity should be too great for drogue deployment
     REQUIRE_THROWS_AS(ppp.drogue(), std::runtime_error);
 
-    // do not need to test for Main Deployment Speed
+    // do not need to test for Main Chute Deployment Speed
     // Drogue MUST be deployed before Main can be deployed
     // if speed is too fast, then Drogue will not deploy anyways
     // drogue and main have the same max deployment speed
 }
 
+// (11.0)
 TEST_CASE("Testing Deployment Order") {
 
     // ignition must happen before drogue
@@ -150,7 +151,67 @@ TEST_CASE("Testing Deployment Order") {
 
 }
 
-// // (9.0)
+// (12.0)
+TEST_CASE("Testing setRocketParameter") {
+
+    // ignition must happen before drogue
+    PhoenixPositionProvider ppp1 {};
+    ppp1.ignite();
+    ppp1.process(10);
+    stateType ppp1_conditions = ppp1.getCurrentConditions();
+    double ppp1_time = ppp1.currentTime;
+    PhoenixPositionProvider::State ppp1_state = ppp1.getStatus();
+    ppp1.process(20);
+    stateType ppp1_final_conditions = ppp1.getCurrentConditions();
+
+    // initializing ppp2 to be same state as ppp1 after 10 seconds
+    PhoenixPositionProvider ppp2 {};
+    ppp2.setRocketParameters(
+        ppp1_conditions[0], ppp1_conditions[1],
+        ppp1_conditions[2], ppp1_conditions[3],
+        ppp1_conditions[4], ppp1_conditions[5],
+        ppp1_state, ppp1_time
+    );
+
+    ppp2.process(20);
+
+    REQUIRE(ppp1.getStatus() == ppp2.getStatus());
+    REQUIRE(ppp1.currentTime == ppp2.currentTime);
+
+    // it seems like there is some randomness in what values ODE comes up with between runs,
+    // sanity check only checks up to the 1000th place, since that seems like good enough precision
+    for (int i = 0; i < 6; i++) {
+        int x = int(ppp1.getCurrentConditions()[i] * 100);
+        int y = int(ppp2.getCurrentConditions()[i] * 100);
+        REQUIRE(x == y);
+    }
+
+}
+
+// (13.0)
+TEST_CASE("General Sanity Checks of setRocketParameters() Function") {
+    PhoenixPositionProvider ppp1 {};
+    ppp1.setRocketParameters(0, 0, 0, 0, 0, 0, PhoenixPositionProvider::State::BURN, 0);
+    REQUIRE_THROWS_AS(ppp1.chute(), std::runtime_error); // chute cannot be called before drogue
+    
+    PhoenixPositionProvider ppp2 {};
+    ppp2.setRocketParameters(0, 0, 0, 0, 0, 0, PhoenixPositionProvider::State::BURN, 0);
+    REQUIRE_THROWS_AS(ppp1.ignite(), std::runtime_error); // ignite cannot be called twice
+
+    PhoenixPositionProvider ppp3 {};
+    ppp3.setRocketParameters(0, 0, 0, 0, 0, 0, PhoenixPositionProvider::State::DROGUE, 0);
+    REQUIRE_THROWS_AS(ppp3.drogue(), std::runtime_error); // drogue cannot be called twice
+
+    PhoenixPositionProvider ppp4 {};
+    ppp4.setRocketParameters(0, 0, 0, 0, 0, 0, PhoenixPositionProvider::State::CHUTE, 0);
+    REQUIRE_THROWS_AS(ppp4.chute(), std::runtime_error); // chute cannot be called twice
+
+    PhoenixPositionProvider ppp5 {};
+    ppp5.setRocketParameters(0, 0, 0, -100, 0, 0, PhoenixPositionProvider::State::COAST, 0);
+    REQUIRE_THROWS_AS(ppp5.drogue(), std::runtime_error); // velocity is too high for drogue to be called
+}
+
+// // (final boss) (takes around 3-4 minutes)
 // TEST_CASE("Doing a whole run") {
 //     PhoenixPositionProvider ppp {};
 //     ppp.ignite();
@@ -163,7 +224,3 @@ TEST_CASE("Testing Deployment Order") {
 //     ppp.chute();
 //     ppp.process(180); 
 // }
-
-// (10.0) 
-
-// (9.0) 

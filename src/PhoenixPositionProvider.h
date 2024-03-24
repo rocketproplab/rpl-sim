@@ -18,17 +18,13 @@ class PhoenixPositionProvider{
 
         // x, y, z position
         double currCoords[3] = {0, 0, 0};
-        int previousRotState;
-        int updatedRotState;
         int chuteCounter;
         int drogueCounter;
-        int destroyed;
         double ignitionTime;
         runge_kutta4<stateType> stepper;
         stateType currentConditions;
 
     public:
-        int igniteCounter;
         
         enum class State {
             PRE_FLIGHT,
@@ -38,18 +34,17 @@ class PhoenixPositionProvider{
             CHUTE
         };
 
-    public:
         PhoenixPositionProvider();
+        int igniteCounter;
+        State rocketState;
+        vector<double> times;
+        vector<stateType> allPositions;
         void process(double deltaTime);
         double* getPosition();
-        double* getRotation();
         void ignite();
         void drogue();
         void chute();
         double currentTime;
-        State rocketState;
-        vector<double> times;
-        vector<stateType> allPositions;
         State getStatus();
         stateType getCurrentConditions();
         void setRocketParameters(float x_pos, float x_vel, float y_pos, float y_vel, float z_pos, float z_vel, State state, double time);

@@ -191,12 +191,13 @@ void PhoenixPositionProvider::setRocketParameters(
         drogueCounter = 1;
         chuteCounter = 1;
     }
+    cout << "setting complete" << endl;
 }
 
 void PhoenixPositionProvider::readOut() {
     cout << "[Rocket Telemetry]\n" 
-        << "x_pos: " << allPositions[allPositions.size() - 1][0] << ", x_vel: " << allPositions[allPositions.size() - 1][1]
-        << "\ny_pos: " << allPositions[allPositions.size() - 1][2] << ", y_vel: " << allPositions[allPositions.size() - 1][3]
-        << "\nz_pos: " << allPositions[allPositions.size() - 1][4] << ", z_vel: " << allPositions[allPositions.size() - 1][5] 
+        << "x_pos: " << currentConditions[0] << ", x_vel: " << currentConditions[1]
+        << "\ny_pos: " << currentConditions[2] << ", y_vel: " << currentConditions[3]
+        << "\nz_pos: " << currentConditions[4] << ", z_vel: " << currentConditions[5] 
         << endl;
 }

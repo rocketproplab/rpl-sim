@@ -7,9 +7,9 @@
 
 using namespace boost::numeric::odeint;
 
-
-const float drogueMaxDeploymentSpeed = 1000; // units *should be* m/s, ask recovery people about this
-const float chuteMaxDeploymentSpeed = 1000; // and this
+// asked recovery, they said 100ft/s (seems kinda slow but ig)
+const float drogueMaxDeploymentSpeed = 30.48; // m/s, ask recovery people about this
+const float chuteMaxDeploymentSpeed = 30.48; // and this
 
 
 class PhoenixPositionProvider{
@@ -40,7 +40,7 @@ class PhoenixPositionProvider{
 
     public:
         PhoenixPositionProvider();
-        void process(double simTime, double deltaTime);
+        void process(double deltaTime);
         double* getPosition();
         double* getRotation();
         void ignite();
@@ -51,6 +51,9 @@ class PhoenixPositionProvider{
         vector<double> times;
         vector<stateType> allPositions;
         State getStatus();
+        stateType getCurrentConditions();
+        void setRocketParameters(float x_pos, float x_vel, float y_pos, float y_vel, float z_pos, float z_vel, State state, double time);
+        void readOut();
 };
 
 #endif

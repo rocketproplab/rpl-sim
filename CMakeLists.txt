@@ -30,7 +30,7 @@ FetchContent_MakeAvailable(Catch2)
 FetchContent_MakeAvailable(Boost)
 FetchContent_MakeAvailable(Eigen3)
 
-include_directories(/opt/homebrew/Cellar/boost/1.84.0/include)
+include_directories(/opt/homebrew/Cellar/boost/1.84.0_1/include)
 #link_directories(src/boost_1_82_0/stage/lib)
 
 add_executable(

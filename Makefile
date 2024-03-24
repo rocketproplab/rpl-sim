@@ -10,7 +10,7 @@ test:
 
 
 build:
-	g++ -std=c++14 -Isrc/Eigen /usr/local/Cellar/boost/1.66.0 src/test.cpp src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp -o rpl-sim
+	g++ -std=c++14 -Isrc/Eigen /opt/homebrew/Cellar/boost/1.84.0_1/include src/test.cpp src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp -o rpl-sim
 
 
 clean:

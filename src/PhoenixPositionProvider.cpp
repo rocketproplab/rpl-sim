@@ -17,7 +17,7 @@ PhoenixPositionProvider::PhoenixPositionProvider() {
     
 }
 
-void PhoenixPositionProvider::process(double simTime, double deltaTime){
+void PhoenixPositionProvider::process(double deltaTime){
     cout << "--------------" << endl;
     cout << "current internal time is " << currentTime << endl;
     // do the integration, based on the current stage
@@ -30,25 +30,29 @@ void PhoenixPositionProvider::process(double simTime, double deltaTime){
         cout << "in BURN stage" << endl;
         
         if (ignitionTime + burnTime < currentTime + deltaTime) {
-            double step1 = ignitionTime + burnTime;
-            double step2 = currentTime + deltaTime - step1;
+            double step1 = ignitionTime + burnTime - currentTime;
+            double step2 = deltaTime - step1;
 
-            cout << step1 << endl;
-            cout << step2 << endl;
+            cout << "BURN stage: " << currentTime << " -> " << currentTime + step1 << endl;
 
             // use DE1 till fuel runs out
             integrate_const(
                 stepper, createDE1, currentConditions, currentTime, currentTime + step1, dt, push_back_state_and_time(allPositions, times)
             );
-            cout << "fuel ran out!";
+
+            currentConditions = allPositions[allPositions.size() - 1];
+            cout << "fuel ran out!\n";
 
             // switch state to COAST
             rocketState = State::COAST;
-            cout << "in COAST stage";
+            cout << "switching state to COAST!\n";
+            cout << "COAST stage: " << currentTime + step1 << " -> " << currentTime + step1 + step2 << endl;
+
+
             // use DE2, since fuel is run out
             integrate_const(
                 stepper, createDE2, currentConditions, currentTime + step1, currentTime + step1 + step2, dt, push_back_state_and_time(allPositions, times)
-            );
+            );      
         } else {
             // use DE1 (burn stage system of equation)
             integrate_const(
@@ -84,18 +88,18 @@ void PhoenixPositionProvider::process(double simTime, double deltaTime){
     }
 
     currentTime += deltaTime;
-    cout << "new internal time is " << currentTime << endl;
+    cout << "new internal time is " << currentTime << "\n" << endl;
 
     // update currCoords
     currCoords[0] = currentConditions[0];
-    currCoords[1] = currentConditions[2]; // not updating y since its not added yet
+    currCoords[1] = currentConditions[2]; 
     currCoords[2] = currentConditions[4];
     
-    // cout << "Rocket Y position is: " << currCoords[2] << endl;
-    cout << "last position: " << allPositions[allPositions.size() - 1][0] << "\t" << allPositions[allPositions.size() - 1][1] << "\t" << allPositions[allPositions.size() - 1][2] << "\t" << allPositions[allPositions.size() - 1][4] << "\t" <<allPositions[allPositions.size() - 1][5] << endl;
+    readOut();
 
     // terminate program when rocket has crashed
     if (currCoords[1] <= 0 && rocketState != State::PRE_FLIGHT) {
+        readOut();
         // TODO: Add rocket state and Y velocity to error message so we can see if it was a crash or landing
         throw runtime_error("Rocket Y position <= 0. Rocket has landed (hopefully), or crashed.");
     }
@@ -113,7 +117,7 @@ void PhoenixPositionProvider::ignite(){
     rocketState = State::BURN;
     ignitionTime = currentTime;
     cout << "------ Rocket Ignition! ------" << endl;
-    cout << "ignition time" << ignitionTime << endl;
+    cout << "ignition time: " << ignitionTime << "\n" << endl;
 }
 
 void PhoenixPositionProvider::drogue(){
@@ -125,7 +129,8 @@ void PhoenixPositionProvider::drogue(){
         throw runtime_error("Error: PhoenixPositionProvider::drogue() was called twice.");
     }
     
-    if (currentConditions[5] > drogueMaxDeploymentSpeed) {
+    if (abs(currentConditions[3]) > drogueMaxDeploymentSpeed) {
+        readOut();
         throw runtime_error("Error: Drogue deployment speed was too fast. Chute ripped.");
     }
     drogueCounter = 1;
@@ -141,7 +146,8 @@ void PhoenixPositionProvider::chute(){
         throw runtime_error("Error: PhoenixPositionProvider::chute() was called twice.");
     }
     
-    if (currentConditions[5] > chuteMaxDeploymentSpeed) {
+    if (abs(currentConditions[3]) > chuteMaxDeploymentSpeed) {
+        readOut();
         throw runtime_error("Error: Chute deployment speed was too fast. Chute ripped.");
     }
     chuteCounter = 1;
@@ -149,3 +155,48 @@ void PhoenixPositionProvider::chute(){
     cout << "------ Main Chute Deployment! ------" << endl;
 }
 
+PhoenixPositionProvider::State PhoenixPositionProvider::getStatus() {
+    return rocketState;
+}
+
+stateType PhoenixPositionProvider::getCurrentConditions() {
+    return currentConditions;
+}
+
+// can be used to skip to a specified rocket state, and continue the sim from there
+// i imagine this being useful when you want to test code for the chute phases, 
+// since it takes a while to start the sim and get to there 
+void PhoenixPositionProvider::setRocketParameters(
+    float x_pos, float x_vel, 
+    float y_pos, float y_vel, 
+    float z_pos, float z_vel, 
+    PhoenixPositionProvider::State state, double time
+    ) {
+    rocketState = state;
+    currentConditions = {x_pos, x_vel, y_pos, y_vel, z_pos, z_vel};
+    currentTime = time;
+
+    if (state == State::BURN) {
+        igniteCounter = 1;
+    }
+    if (state == State::COAST) {
+        igniteCounter = 1;
+    }
+    if (state == State::DROGUE) {
+        igniteCounter = 1;
+        drogueCounter = 1;
+    }
+    if (state == State::CHUTE) {
+        igniteCounter = 1;
+        drogueCounter = 1;
+        chuteCounter = 1;
+    }
+}
+
+void PhoenixPositionProvider::readOut() {
+    cout << "[Rocket Telemetry]\n" 
+        << "x_pos: " << allPositions[allPositions.size() - 1][0] << ", x_vel: " << allPositions[allPositions.size() - 1][1]
+        << "\ny_pos: " << allPositions[allPositions.size() - 1][2] << ", y_vel: " << allPositions[allPositions.size() - 1][3]
+        << "\nz_pos: " << allPositions[allPositions.size() - 1][4] << ", z_vel: " << allPositions[allPositions.size() - 1][5] 
+        << endl;
+}

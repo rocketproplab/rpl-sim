@@ -1,7 +1,10 @@
+# Top Level Env Variables
+export BOOST_INCLUDEDIR := ./src/boost_1_82_0
+
 .PHONY: all test clean build
 
 test:
-	cmake -S . -B build
+	cmake -S . -B build -DBOOST_INCLUDEDIR=${BOOST_INCLUDEDIR}
 	cmake --build build
 	cp src/atmosisa.csv build
 	cp src/mach_vs_cd.csv build

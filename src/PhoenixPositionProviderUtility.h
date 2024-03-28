@@ -1,7 +1,7 @@
 #ifndef PHOENIX_POSITION_PROVIDER_UTILITY_H
 #define PHOENIX_POSITION_PROVIDER_UTILITY_H
 #include <boost/numeric/odeint.hpp>
-#include "spline-master/src/spline.h"
+#include "spline.h"
 #include <cmath>
 #include <vector>
 #include <sstream>

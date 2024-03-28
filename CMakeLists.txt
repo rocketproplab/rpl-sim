@@ -32,6 +32,7 @@ FetchContent_MakeAvailable(Eigen3)
 # Fetch Boost from included source
 # TODO: Possibly use an installed Boost rather than Boost included in the source.
 set(BOOST_ENABLE_CMAKE ON)
+set(BOOST_INCLUDEDIR "./lib/boost_1_82_0")
 find_package(Boost 1.82 REQUIRED) # Expects environmental variable BOOST_INCLUDEDIR
 
 ##############################################################################
@@ -40,6 +41,8 @@ find_package(Boost 1.82 REQUIRED) # Expects environmental variable BOOST_INCLUDE
 
 include_directories(src)
 link_directories(src)
+
+include_directories(lib/spline)
 
 ##############################################################################
 # TEST INFRASTRUCTURE

@@ -1,4 +1,5 @@
-# include "PhoenixPositionProvider.h"
+#include "PhoenixPositionProvider.h"
+
 // TODO
 // - confirm maxDeploymentSpeeds (defined in .h) with Recovery people
 // change coordinate system to right-handed
@@ -8,6 +9,8 @@ PhoenixPositionProvider::PhoenixPositionProvider() {
     
     // x pos, x vel, y pos, y vel, z pos, z vel
     currentConditions = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+    position = Vector3(0,0,0);
 
     igniteCounter = 0;
     chuteCounter = 0;
@@ -91,22 +94,22 @@ void PhoenixPositionProvider::process(double deltaTime){
     cout << "new internal time is " << currentTime << "\n" << endl;
 
     // update currCoords
-    currCoords[0] = currentConditions[0];
-    currCoords[1] = currentConditions[2]; 
-    currCoords[2] = currentConditions[4];
+    position.x = currentConditions[0];
+    position.y = currentConditions[2]; 
+    position.z = currentConditions[4];
     
     readOut();
 
     // terminate program when rocket has crashed
-    if (currCoords[1] <= 0 && rocketState != State::PRE_FLIGHT) {
+    if (position.y <= 0 && rocketState != State::PRE_FLIGHT) {
         readOut();
         // TODO: Add rocket state and Y velocity to error message so we can see if it was a crash or landing
         throw runtime_error("Rocket Y position <= 0. Rocket has landed (hopefully), or crashed.");
     }
 }
 
-double* PhoenixPositionProvider::getPosition(){
-    return currCoords;
+Vector3 PhoenixPositionProvider::getPosition(){
+    return this->position;
 }
 
 void PhoenixPositionProvider::ignite(){

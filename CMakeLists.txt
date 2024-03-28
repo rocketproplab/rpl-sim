@@ -34,7 +34,15 @@ FetchContent_MakeAvailable(Eigen3)
 set(BOOST_ENABLE_CMAKE ON)
 find_package(Boost 1.82 REQUIRED) # Expects environmental variable BOOST_INCLUDEDIR
 
+##############################################################################
+# LINK LIBRARIES
+##############################################################################
 
+include_directories(src)
+link_directories(src)
+
+##############################################################################
+# TEST INFRASTRUCTURE
 ##############################################################################
 
 add_executable(
@@ -42,6 +50,7 @@ add_executable(
 	test/tests.cpp
 	src/PhoenixPositionProvider.cpp
 	src/PhoenixPositionProviderUtility.cpp
+	src/Vector3.cpp
 )
 
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain Eigen3::Eigen Boost::boost)

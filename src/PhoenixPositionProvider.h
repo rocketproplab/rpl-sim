@@ -3,7 +3,7 @@
 #include <time.h> // for seeind rand
 #include <stdlib.h> // for rand
 #include "PhoenixPositionProviderUtility.h"
-
+#include "Vector3.hpp"
 
 using namespace boost::numeric::odeint;
 
@@ -17,12 +17,13 @@ class PhoenixPositionProvider{
         const double dt = 0.01; // must be a double for odeint to work
 
         // x, y, z position
-        double currCoords[3] = {0, 0, 0};
+        Vector3 position;
         int chuteCounter;
         int drogueCounter;
         double ignitionTime;
         runge_kutta4<stateType> stepper;
         stateType currentConditions;
+        vector<stateType> allPositions;
 
     public:
         
@@ -38,9 +39,9 @@ class PhoenixPositionProvider{
         int igniteCounter;
         State rocketState;
         vector<double> times;
-        vector<stateType> allPositions;
+        
         void process(double deltaTime);
-        double* getPosition();
+        Vector3 getPosition();
         void ignite();
         void drogue();
         void chute();

@@ -32,8 +32,8 @@ class PhoenixPositionProvider
         double ignitionTime;
         runge_kutta4<stateType> stepper;
         stateType currentConditions;
-        vector<stateType> allPositions;
-        vector<double> times;
+        std::vector<stateType> allPositions;
+        std::vector<double> times;
         double currentTime;
         State rocketState;
         

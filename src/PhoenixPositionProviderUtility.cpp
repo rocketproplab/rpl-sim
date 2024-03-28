@@ -1,24 +1,28 @@
 # include "PhoenixPositionProviderUtility.h"
 
+using std::vector;
+using std::string;
+
+using std::endl;
 
 //the first row of atmosisa csv file is T, second is a, third is P, fourth is rho
 
 vector<vector<float>> parseFile(const string& filename){
     vector<vector<float>> result; // Vector to store the final result
 
-    ifstream atmos_file(filename);
+    std::ifstream atmos_file(filename);
     if (!atmos_file.is_open()) {
-        cerr << "Error: Unable to open file " << filename << endl;
+        std::cerr << "Error: Unable to open file " << filename << endl;
         return result; // Return an empty vector if the file cannot be opened
     }
 
     string line;
-    while (getline(atmos_file, line)) {
+    while (std::getline(atmos_file, line)) {
         vector<float> row; // Vector to store the values of a single row
 
-        istringstream iss(line);
+        std::istringstream iss(line);
         string value;
-        while (getline(iss, value, ',')) {
+        while (std::getline(iss, value, ',')) {
             float floatValue = stof(value);
             row.push_back(floatValue);
         }
@@ -201,7 +205,7 @@ void createDE4(const stateType& q, stateType& dqdt, const double t) {
     dqdt[5] = 1.0 / DryMass * WindLoad_z(q[2]);
 }
 
-push_back_state_and_time::push_back_state_and_time(std::vector<stateType>& states, std::vector<double>& times)
+push_back_state_and_time::push_back_state_and_time(vector<stateType>& states, vector<double>& times)
     : m_states(states), m_times(times) {}
 
 

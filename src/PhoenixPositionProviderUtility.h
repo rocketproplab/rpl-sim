@@ -4,16 +4,18 @@
 #include "spline-master/src/spline.h"
 #include <cmath>
 #include <vector>
-#include<sstream>
+#include <sstream>
 #include <iostream>
-#include<fstream>
-using namespace std;
+#include <fstream>
 
+
+#define PI boost::math::constants::pi<double>()
 
 
 // CONSTANTS
 
 const float g = 9.81; // m/s
+
 
 // rocket body parameters
 const float DryMass = 54.4218; //kg  (126 lbs)
@@ -21,17 +23,17 @@ const float FuelMass = 20.72917; //kg  (45.7 lbs)
 const float Rocket_Diameter = 0.206756; //m  (8.14 in)
 const float Rocket_Height = 4.64; //m (165 in)
 const float Rocket_WindloadArea = Rocket_Diameter * Rocket_Height;
-const float Rocket_Cross_Section_Area = 3.14159265358979323846 * pow(Rocket_Diameter / 2, 2);
+const float Rocket_Cross_Section_Area = PI * pow(Rocket_Diameter / 2, 2);
 
 // Drogue parameters
 const float DrogueCd = 2.2;
 const float Drogue_Diameter = 1.524;
-const float Drogue_Area = 3.14159265358979323846 * pow(Drogue_Diameter / 2, 2);
+const float Drogue_Area = PI * pow(Drogue_Diameter / 2, 2);
 
 // Main parachute parameters
 const float MainCd = 2.2;
 const float Main_Diameter = 4.8768;
-const float Main_Area = 3.14159265358979323846 * pow(Main_Diameter / 2, 2);
+const float Main_Area = PI * pow(Main_Diameter / 2, 2);
 
 // rocket fuel parameters
 const float m_dot = 1.2579; // kg/s, mass flow rate of fuel
@@ -45,7 +47,7 @@ const float AvgWindSpeed = 10; // m/s, average speed of wind of FAR site
 
 float mass(float t);
 float TempWindLoad(float y);
-vector<float> GenerateWindLoadData();
+std::vector<float> GenerateWindLoadData();
 float WindLoad_x(float y);
 float WindLoad_z(float y);
 float Thrust(float y);
@@ -53,10 +55,10 @@ float RocketCd(float vy);
 float RocketDrag(float y, float vy);
 float DrogueDrag(float y, float vy);
 float MainDrag(float y, float vy);
-vector<vector<float>> parseFile(const string& filename);
-vector<float> getAltitudes();
-float linearInterp(float x, vector<float> all_x, vector<float> all_y);
-float splineInterp(float x, vector<float> all_x, vector<float> all_y);
+std::vector<std::vector<float>> parseFile(const std::string& filename);
+std::vector<float> getAltitudes();
+float linearInterp(float x, std::vector<float> all_x, std::vector<float> all_y);
+float splineInterp(float x, std::vector<float> all_x, std::vector<float> all_y);
 float AirDensityFromAltitude(float x);
 
 

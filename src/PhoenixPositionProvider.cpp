@@ -1,5 +1,13 @@
 #include "PhoenixPositionProvider.h"
 
+using std::string;
+using std::stof;
+
+using std::runtime_error;
+
+using std::endl;
+using std::cout;
+
 // TODO
 // - confirm maxDeploymentSpeeds (defined in .h) with Recovery people
 // change coordinate system to right-handed

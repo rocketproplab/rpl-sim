@@ -12,9 +12,9 @@ PhoenixPositionProvider::PhoenixPositionProvider() {
 
     position = Vector3(0,0,0);
 
-    igniteCounter = 0;
-    chuteCounter = 0;
-    drogueCounter = 0;
+    didIgniteFlag = false;
+    didChuteFlag = false;
+    didDrogueFlag = false;
 
     rocketState = State::PRE_FLIGHT;
     
@@ -108,7 +108,8 @@ void PhoenixPositionProvider::process(double deltaTime){
     }
 }
 
-Vector3 PhoenixPositionProvider::getPosition(){
+Vector3 PhoenixPositionProvider::getPosition()
+{
     return this->position;
 }
 
@@ -117,23 +118,30 @@ PhoenixPositionProvider::State PhoenixPositionProvider::getFlightState()
     return this->rocketState;
 }
 
-void PhoenixPositionProvider::ignite(){
-    if (igniteCounter != 0) {
+void PhoenixPositionProvider::ignite()
+{
+    if (didIgniteFlag) {
         throw runtime_error("Error: PhoenixPositionProvider::ignite() was called twice.");
     }
-    igniteCounter = 1;
+    didIgniteFlag = true;
     rocketState = State::BURN;
     ignitionTime = currentTime;
     // cout << "------ Rocket Ignition! ------" << endl;
     // cout << "ignition time: " << ignitionTime << "\n" << endl;
 }
 
-void PhoenixPositionProvider::drogue(){
-    if(igniteCounter == 0){
+bool PhoenixPositionProvider::didIgnite()
+{
+    return this->didIgniteFlag;
+}
+
+void PhoenixPositionProvider::drogue()
+{
+    if (!didIgniteFlag) {
         throw runtime_error("Error: Drogue deployment before ignition");
     }
     
-    if (drogueCounter != 0) {
+    if (didDrogueFlag) {
         throw runtime_error("Error: PhoenixPositionProvider::drogue() was called twice.");
     }
     
@@ -141,16 +149,25 @@ void PhoenixPositionProvider::drogue(){
         readOut();
         throw runtime_error("Error: Drogue deployment speed was too fast. Chute ripped.");
     }
-    drogueCounter = 1;
+    didDrogueFlag = true;
     rocketState = State::DROGUE;
     cout << "------ Drogue Chute Deployment! ------" << endl;
 }
 
-void PhoenixPositionProvider::chute(){
-    if(drogueCounter == 0){
+bool PhoenixPositionProvider::didDrogue()
+{
+    return this->didDrogueFlag;
+}
+
+void PhoenixPositionProvider::chute()
+{
+    if (!didIgniteFlag) {
+        throw runtime_error("Error: Chute deployed before main ignition.");
+    }
+    if (!didDrogueFlag) {
         throw runtime_error("Error: Chute deployed before drogue deployment");
     }
-    if (chuteCounter != 0) {
+    if (didChuteFlag) {
         throw runtime_error("Error: PhoenixPositionProvider::chute() was called twice.");
     }
     
@@ -158,9 +175,14 @@ void PhoenixPositionProvider::chute(){
         readOut();
         throw runtime_error("Error: Chute deployment speed was too fast. Chute ripped.");
     }
-    chuteCounter = 1;
+    didChuteFlag = true;
     rocketState = State::CHUTE;
     cout << "------ Main Chute Deployment! ------" << endl;
+}
+
+bool PhoenixPositionProvider::didChute()
+{
+    return this->didChuteFlag;
 }
 
 stateType PhoenixPositionProvider::getCurrentConditions() {

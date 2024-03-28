@@ -12,7 +12,7 @@ TEST_CASE("Ignite working normally", "Ignite"){
 	PhoenixPositionProvider ppp {};
 	ppp.ignite();
 	REQUIRE( ppp.getFlightState() == PhoenixPositionProvider::State::BURN );
-	REQUIRE( ppp.igniteCounter == 1 );
+	REQUIRE( ppp.didIgnite() );
 	// error if called twice
 	REQUIRE_THROWS_AS(ppp.ignite(), std::runtime_error);
 }

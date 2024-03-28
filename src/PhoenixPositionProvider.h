@@ -28,8 +28,7 @@ class PhoenixPositionProvider
 
         // x, y, z position
         Vector3 position;
-        int chuteCounter;
-        int drogueCounter;
+        
         double ignitionTime;
         runge_kutta4<stateType> stepper;
         stateType currentConditions;
@@ -37,19 +36,26 @@ class PhoenixPositionProvider
         vector<double> times;
         double currentTime;
         State rocketState;
+        
+        bool didIgniteFlag;
+        bool didChuteFlag;
+        bool didDrogueFlag;
 
     public:
         
-        
-
         PhoenixPositionProvider();
-        int igniteCounter;
-        
+
         void process(double deltaTime);
         Vector3 getPosition();
         void ignite();
         void drogue();
         void chute();
+
+        bool didIgnite(); // Returns true if ignite() was called once, false otherwise.
+                          // Pretty much used only for testing.
+        bool didChute();
+        bool didDrogue();
+
         State getFlightState();
         stateType getCurrentConditions();
 

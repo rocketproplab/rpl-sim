@@ -112,6 +112,11 @@ Vector3 PhoenixPositionProvider::getPosition(){
     return this->position;
 }
 
+PhoenixPositionProvider::State PhoenixPositionProvider::getFlightState()
+{
+    return this->rocketState;
+}
+
 void PhoenixPositionProvider::ignite(){
     if (igniteCounter != 0) {
         throw runtime_error("Error: PhoenixPositionProvider::ignite() was called twice.");
@@ -119,8 +124,8 @@ void PhoenixPositionProvider::ignite(){
     igniteCounter = 1;
     rocketState = State::BURN;
     ignitionTime = currentTime;
-    cout << "------ Rocket Ignition! ------" << endl;
-    cout << "ignition time: " << ignitionTime << "\n" << endl;
+    // cout << "------ Rocket Ignition! ------" << endl;
+    // cout << "ignition time: " << ignitionTime << "\n" << endl;
 }
 
 void PhoenixPositionProvider::drogue(){
@@ -158,43 +163,8 @@ void PhoenixPositionProvider::chute(){
     cout << "------ Main Chute Deployment! ------" << endl;
 }
 
-PhoenixPositionProvider::State PhoenixPositionProvider::getStatus() {
-    return rocketState;
-}
-
 stateType PhoenixPositionProvider::getCurrentConditions() {
     return currentConditions;
-}
-
-// can be used to skip to a specified rocket state, and continue the sim from there
-// i imagine this being useful when you want to test code for the chute phases, 
-// since it takes a while to start the sim and get to there 
-void PhoenixPositionProvider::setRocketParameters(
-    float x_pos, float x_vel, 
-    float y_pos, float y_vel, 
-    float z_pos, float z_vel, 
-    PhoenixPositionProvider::State state, double time
-    ) {
-    rocketState = state;
-    currentConditions = {x_pos, x_vel, y_pos, y_vel, z_pos, z_vel};
-    currentTime = time;
-
-    if (state == State::BURN) {
-        igniteCounter = 1;
-    }
-    if (state == State::COAST) {
-        igniteCounter = 1;
-    }
-    if (state == State::DROGUE) {
-        igniteCounter = 1;
-        drogueCounter = 1;
-    }
-    if (state == State::CHUTE) {
-        igniteCounter = 1;
-        drogueCounter = 1;
-        chuteCounter = 1;
-    }
-    cout << "setting complete" << endl;
 }
 
 void PhoenixPositionProvider::readOut() {

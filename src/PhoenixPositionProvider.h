@@ -12,7 +12,17 @@ const float drogueMaxDeploymentSpeed = 30.48; // m/s, ask recovery people about 
 const float chuteMaxDeploymentSpeed = 30.48; // and this
 
 
-class PhoenixPositionProvider{
+class PhoenixPositionProvider
+{
+    public:
+        enum class State {
+            PRE_FLIGHT,
+            BURN,
+            COAST,
+            DROGUE,
+            CHUTE
+        };
+
     private:
         const double dt = 0.01; // must be a double for odeint to work
 
@@ -24,31 +34,25 @@ class PhoenixPositionProvider{
         runge_kutta4<stateType> stepper;
         stateType currentConditions;
         vector<stateType> allPositions;
+        vector<double> times;
+        double currentTime;
+        State rocketState;
 
     public:
         
-        enum class State {
-            PRE_FLIGHT,
-            BURN,
-            COAST,
-            DROGUE,
-            CHUTE
-        };
+        
 
         PhoenixPositionProvider();
         int igniteCounter;
-        State rocketState;
-        vector<double> times;
         
         void process(double deltaTime);
         Vector3 getPosition();
         void ignite();
         void drogue();
         void chute();
-        double currentTime;
-        State getStatus();
+        State getFlightState();
         stateType getCurrentConditions();
-        void setRocketParameters(float x_pos, float x_vel, float y_pos, float y_vel, float z_pos, float z_vel, State state, double time);
+
         void readOut();
 };
 

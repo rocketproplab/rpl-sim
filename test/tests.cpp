@@ -4,14 +4,14 @@
 //(1.0) 
 TEST_CASE("In pre-flight stage", "Pre-flight"){
 	PhoenixPositionProvider ppp {};
-	REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::PRE_FLIGHT);
+	REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::PRE_FLIGHT);
 }
 
 // (2.0) 
 TEST_CASE("Ignite working normally", "Ignite"){
 	PhoenixPositionProvider ppp {};
 	ppp.ignite();
-	REQUIRE( ppp.rocketState == PhoenixPositionProvider::State::BURN );
+	REQUIRE( ppp.getFlightState() == PhoenixPositionProvider::State::BURN );
 	REQUIRE( ppp.igniteCounter == 1 );
 	// error if called twice
 	REQUIRE_THROWS_AS(ppp.ignite(), std::runtime_error);
@@ -25,7 +25,7 @@ TEST_CASE("Drogue stage okay", "Drogue"){
 	ppp.drogue();
 	// error if called twice
 	REQUIRE_THROWS_AS(ppp.drogue(), std::runtime_error);
-	REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::DROGUE);
+	REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::DROGUE);
 }
 
 // (4.0) 
@@ -37,7 +37,7 @@ TEST_CASE("Chute stage okay", "Chute"){
 	ppp.chute();
 	// error if called twice
 	REQUIRE_THROWS_AS(ppp.chute(), std::runtime_error);
-	REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::CHUTE);
+	REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::CHUTE);
 }
 
 // (5.0) 
@@ -45,9 +45,9 @@ TEST_CASE("Rocket State Transitions to BURN to COAST after Fuel Cutoff") {
     PhoenixPositionProvider ppp {};
     ppp.ignite();
     ppp.process(16.47);
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::BURN);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::BURN);
     ppp.process(0.03);
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::COAST);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::COAST);
 }
 
 // (6.0) 
@@ -55,13 +55,13 @@ TEST_CASE("Rocket State Will Remain BURN if currentTime is == BurnTime + Ignitio
     PhoenixPositionProvider ppp {};
     ppp.ignite();
     ppp.process(16.47);
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::BURN);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::BURN);
     ppp.process(0.01);
     // currentTime is 16.48 at this point, which is == to BurnTime
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::BURN);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::BURN);
     ppp.process(0.01);
     // after this, currentTime is 16.49, which should transition rocket to COAST 
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::COAST);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::COAST);
 }
 
 // (7.0) 
@@ -70,13 +70,13 @@ TEST_CASE("Testing State Transition, but with ignitionTime != 0") {
     ppp.process(0.5);
     ppp.ignite();
     ppp.process(16.47);
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::BURN);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::BURN);
     ppp.process(0.01);
     // currentTime is 16.48 at this point, which is == to BurnTime
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::BURN);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::BURN);
     ppp.process(0.01);
     // after this, currentTime is 16.49, which should transition rocket to COAST 
-    REQUIRE(ppp.rocketState == PhoenixPositionProvider::State::COAST);
+    REQUIRE(ppp.getFlightState() == PhoenixPositionProvider::State::COAST);
 }
 
 

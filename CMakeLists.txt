@@ -5,6 +5,11 @@ set(CMAKE_CXX_STANDARD 11)
 
 include(FetchContent)
 
+##############################################################################
+# PROJECT FILES
+##############################################################################
+
+set(RPLSIM_FILES src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp src/Vector3.cpp)
 
 ##############################################################################
 # CATCH2 AND EIGEN -- REMOTE SOURCE
@@ -43,6 +48,8 @@ include_directories(src)
 link_directories(src)
 
 include_directories(lib/spline)
+include_directories(lib/json)
+include_directories(lib/optparse)
 
 ##############################################################################
 # TEST INFRASTRUCTURE
@@ -51,9 +58,20 @@ include_directories(lib/spline)
 add_executable(
 	tests 
 	test/tests.cpp
-	src/PhoenixPositionProvider.cpp
-	src/PhoenixPositionProviderUtility.cpp
-	src/Vector3.cpp
+	${RPLSIM_FILES}
 )
 
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain Eigen3::Eigen Boost::boost)
+target_link_libraries(tests PRIVATE Boost::boost Catch2::Catch2WithMain Eigen3::Eigen)
+
+##############################################################################
+# PROGRAM BUILD INFRASTRUCTURE
+##############################################################################
+
+add_executable(
+	main_exe 
+	src/main.cpp
+	${RPLSIM_FILES}
+)
+
+target_link_libraries(main_exe PRIVATE Boost::boost Catch2::Catch2WithMain Eigen3::Eigen)
+

@@ -8,11 +8,6 @@ test:
 	cp src/thrust_curve.csv build
 	cd build && ./tests && cd ..
 
-
-build:
-	g++ -std=c++14 -Isrc/Eigen src/boost_1_82_0/include src/test.cpp src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp -o rpl-sim
-
-
 clean:
 	rm -rf build
 	rmdir build

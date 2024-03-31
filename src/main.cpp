@@ -20,19 +20,37 @@ int main(int argc, char *argv[])
     parser.add_option("--output")
         .help("The path at which to write the simulation dump file.");
 
-
     // --------------------------------
 
     optparse::OptionGroup position_provider("Position Provider Data");
 
+    // TODO: Make these things matter.
+    position_provider.add_option("--pp-pos-x")
+        .help("The initial x position of the vehicle from the launch site.")
+        .set_default("0")
+        .type("double");
+    
+    position_provider.add_option("--pp-pos-y")
+        .help("The initial y position of the vehicle from the launch site.")
+        .set_default("0")
+        .type("double");
+
+    position_provider.add_option("--pp-pos-z")
+        .help("The initial z position of the vehicle from the launch site.")
+        .set_default("0")
+        .type("double");
+
     position_provider.add_option("--pp-atmosphere-isa-csv")
-        .help("The path at which an atmosphere ISA datafile exists.");
+        .help("The path at which an atmosphere ISA datafile exists.")
+        .type("string");
 
     position_provider.add_option("--pp-thrust-curve-csv")
-        .help("The path at which data for the thrust curve of the main engine exists.");
+        .help("The path at which data for the thrust curve of the main engine exists.")
+        .type("string");
 
     position_provider.add_option("--pp-mach-vs-cd.csv")
-        .help("TODO TODO IDK WTF THIS IS, ASK PROPULSION TEAM. REQUIRED THO :)");
+        .help("TODO TODO IDK WTF THIS IS, ASK PROPULSION TEAM. REQUIRED THO :)")
+        .type("string");
 
     parser.add_option_group(position_provider);
 

@@ -1,5 +1,11 @@
-
+#include <vector>
+#include <string>
 #include <filesystem>
+
+using std::vector;
+using std::string;
+
+using std::endl;
 
 // TODO: Does this need bounds checking?
 double linearInterp(double x, vector<double> all_x, vector<double> all_y) {

@@ -32,7 +32,7 @@ class RocketFlightProperties
 
         // Wind Load
         std::vector<double> _windLoadX;
-        std::vector<double> _windLoadY;
+        std::vector<double> _windLoadZ;
 
         // Atmospheric Data
         std::vector<double> _temperatureData;
@@ -49,6 +49,8 @@ class RocketFlightProperties
 
         // Helper functions
         airDensityFromAltitude(double x);
+        tempWindLoad(double y);
+        std::vector<double> generateWindLoadData();
 
     public:
         RocketFlightProperties();
@@ -64,6 +66,20 @@ class RocketFlightProperties
         double calcMainDrag(double y, double vy);      // ✔
 
         double calcThrust(double y);                   // ✔
+
+        void createDE1(const stateType& q, stateType& dqdt, const double t);
+        void createDE2(const stateType& q, stateType& dqdt, const double t);
+        void createDE3(const stateType& q, stateType& dqdt, const double t);
+        void createDE4(const stateType& q, stateType& dqdt, const double t);
+
+        struct push_back_state_and_time
+        {
+            std::vector<stateType>& m_states;
+            std::vector<double>& m_times;
+
+            push_back_state_and_time(std::vector<stateType>& states, std::vector<double>& times);
+            void operator()(const stateType& x, double t);
+        };
 }
 
 #endif /* ROCKET_FLIGHT_PROPERTIES_H */

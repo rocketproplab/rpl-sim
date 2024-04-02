@@ -6,6 +6,8 @@ const std::string version =
     "%prog 1.0\nCopyright (C) 2023\n"
     "TODO MIT LICENSE";
 
+
+
 int main(int argc, char *argv[])
 {
 
@@ -16,29 +18,19 @@ int main(int argc, char *argv[])
           .epilog("Epilog");
 
 
+    parser.add_option("--serial-port")
+        .help("The serial port at which the flight computer is connected.")
+        .type("string");
 
     parser.add_option("--output")
-        .help("The path at which to write the simulation dump file.");
+        .help("The path at which to write the simulation dump file.")
+        .type("string");
 
     // --------------------------------
 
     optparse::OptionGroup position_provider("Position Provider Data");
 
     // TODO: Make these things matter.
-    position_provider.add_option("--pp-pos-x")
-        .help("The initial x position of the vehicle from the launch site.")
-        .set_default("0")
-        .type("double");
-    
-    position_provider.add_option("--pp-pos-y")
-        .help("The initial y position of the vehicle from the launch site.")
-        .set_default("0")
-        .type("double");
-
-    position_provider.add_option("--pp-pos-z")
-        .help("The initial z position of the vehicle from the launch site.")
-        .set_default("0")
-        .type("double");
 
     position_provider.add_option("--pp-atmosphere-isa-csv")
         .help("The path at which an atmosphere ISA datafile exists.")

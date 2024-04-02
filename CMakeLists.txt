@@ -52,6 +52,43 @@ include_directories(lib/json)
 include_directories(lib/optparse)
 
 ##############################################################################
+# PROGRAM BUILD INFRASTRUCTURE
+##############################################################################
+
+add_executable(
+	main_exe 
+	src/main.cpp
+	${RPLSIM_FILES}
+)
+
+target_link_libraries(main_exe LINK_PUBLIC Boost::boost Boost::program_options)
+target_link_libraries(main_exe PRIVATE Eigen3::Eigen)
+
+##############################################################################
+# INCLUDE CSVS WITH BUILD INFRASTRUCTURE
+##############################################################################
+add_custom_command(
+	TARGET main_exe PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+	${CMAKE_SOURCE_DIR}/data/atmosisa.csv 
+	$<TARGET_FILE_DIR:main_exe>
+)
+
+add_custom_command(
+	TARGET main_exe PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+	${CMAKE_SOURCE_DIR}/data/mach_vs_cd.csv 
+	$<TARGET_FILE_DIR:main_exe>
+)
+
+add_custom_command(
+	TARGET main_exe PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+	${CMAKE_SOURCE_DIR}/data/thrust_curve.csv 
+	$<TARGET_FILE_DIR:main_exe>
+)
+
+##############################################################################
 # TEST INFRASTRUCTURE
 ##############################################################################
 
@@ -64,16 +101,8 @@ add_executable(
 target_link_libraries(tests LINK_PUBLIC Boost::boost Boost::program_options)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain Eigen3::Eigen)
 
-##############################################################################
-# PROGRAM BUILD INFRASTRUCTURE
-##############################################################################
-
-add_executable(
-	main_exe 
-	src/main.cpp
-	${RPLSIM_FILES}
-)
-
-target_link_libraries(main_exe LINK_PUBLIC Boost::boost Boost::program_options)
-target_link_libraries(main_exe PRIVATE Catch2::Catch2WithMain Eigen3::Eigen)
-
+# https://github.com/catchorg/Catch2/blob/devel/docs/cmake-integration.md
+list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+include(CTest)
+include(Catch)
+catch_discover_tests(tests)

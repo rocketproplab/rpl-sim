@@ -37,8 +37,8 @@ FetchContent_MakeAvailable(Eigen3)
 # Fetch Boost from included source
 # TODO: Possibly use an installed Boost rather than Boost included in the source.
 set(BOOST_ENABLE_CMAKE ON)
-set(BOOST_INCLUDEDIR "./lib/boost_1_82_0")
-find_package(Boost 1.82 REQUIRED) # Expects environmental variable BOOST_INCLUDEDIR
+#set(BOOST_INCLUDEDIR "./lib/boost_1_82_0")
+find_package(Boost 1.74 REQUIRED COMPONENTS program_options) # Expects environmental variable BOOST_INCLUDEDIR
 
 ##############################################################################
 # LINK LIBRARIES
@@ -61,7 +61,8 @@ add_executable(
 	${RPLSIM_FILES}
 )
 
-target_link_libraries(tests PRIVATE Boost::boost Catch2::Catch2WithMain Eigen3::Eigen)
+target_link_libraries(tests LINK_PUBLIC Boost::boost Boost::program_options)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain Eigen3::Eigen)
 
 ##############################################################################
 # PROGRAM BUILD INFRASTRUCTURE
@@ -73,5 +74,6 @@ add_executable(
 	${RPLSIM_FILES}
 )
 
-target_link_libraries(main_exe PRIVATE Boost::boost Catch2::Catch2WithMain Eigen3::Eigen)
+target_link_libraries(main_exe LINK_PUBLIC Boost::boost Boost::program_options)
+target_link_libraries(main_exe PRIVATE Catch2::Catch2WithMain Eigen3::Eigen)
 

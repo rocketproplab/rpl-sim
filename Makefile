@@ -1,5 +1,10 @@
-build:
-	g++ -Isrc/Eigen src/test.cpp -o rpl-sim
+.PHONY: all test clean build
+
+test:
+	cmake -S . -B build
+	cmake --build build
+	cd build && ./tests && cd ..
 
 clean:
-	rm rpl-sim
+	rm -rf build
+	rmdir build

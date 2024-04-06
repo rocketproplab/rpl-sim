@@ -71,21 +71,21 @@ add_custom_command(
 	TARGET main_exe PRE_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy
 	${CMAKE_SOURCE_DIR}/data/atmosisa.csv 
-	$<TARGET_FILE_DIR:main_exe>
+	$<TARGET_FILE_DIR:main_exe>/atmosisa.csv 
 )
 
 add_custom_command(
 	TARGET main_exe PRE_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy
 	${CMAKE_SOURCE_DIR}/data/mach_vs_cd.csv 
-	$<TARGET_FILE_DIR:main_exe>
+	$<TARGET_FILE_DIR:main_exe>/mach_vs_cd.csv 
 )
 
 add_custom_command(
 	TARGET main_exe PRE_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy
 	${CMAKE_SOURCE_DIR}/data/thrust_curve.csv 
-	$<TARGET_FILE_DIR:main_exe>
+	$<TARGET_FILE_DIR:main_exe>/thrust_curve.csv 
 )
 
 ##############################################################################

@@ -37,11 +37,11 @@ vector<vector<float>> parseFile(const string &filename)
     return result;
 }
 
-vector<vector<float>> atmos_data = parseFile("atmosisa.csv");
-vector<float> temperature = atmos_data[0];
-vector<float> speed_of_sound = atmos_data[1];
-vector<float> pressure = atmos_data[2];
-vector<float> rho = atmos_data[3];
+// vector<vector<float>> atmos_data = parseFile("atmosisa.csv");
+// vector<float> temperature = atmos_data[0];
+// vector<float> speed_of_sound = atmos_data[1];
+// vector<float> pressure = atmos_data[2];
+// vector<float> rho = atmos_data[3];
 
 float linearInterp(float x, vector<float> all_x, vector<float> all_y)
 {
@@ -79,9 +79,8 @@ vector<float> getAltitudes()
     return toReturn;
 }
 
-vector<float> altitudes = getAltitudes();
-
-float AirDensityFromAltitude(float x)
+float AirDensityFromAltitude(float x, vector<float> const &altitudes,
+                             vector<float> const &rho)
 {  // looks correct
     return linearInterp(x, altitudes, rho);
 }
@@ -111,28 +110,28 @@ vector<float> thrust = thrust_curve[1];
 float mass(float t) { return DryMass + FuelMass - m_dot * t; }
 // calculate the mass of rocket at time t
 
-float TempWindLoad(float y)
+float TempWindLoad(float y, vector<float> const &altitudes,
+                   vector<float> const &rho)
 {
     int WindOffset = (rand() % 7) - 3;  // force range to [-3, 3]
-    return 0.5 * AirDensityFromAltitude(y) *
+    return 0.5 * AirDensityFromAltitude(y, altitudes, rho) *
            pow((AvgWindSpeed + WindOffset), 2) * Rocket_WindloadArea;
 }
 
-vector<float> GenerateWindLoadData()
+vector<float> GenerateWindLoadData(vector<float> const &altitudes,
+                                   vector<float> const &rho)
 {
     vector<float> windloads;
     for (int alt = 0; alt < 10001; alt++) {
         float offset = -1 + 2 * (rand() / static_cast<double>(RAND_MAX));
         // cout << offset * TempWindLoad(alt) << endl;
-        windloads.push_back(offset * TempWindLoad(alt));
+        windloads.push_back(offset * TempWindLoad(alt, altitudes, rho));
     }
     return windloads;
 }
 
-vector<float> windloads_x = GenerateWindLoadData();
-vector<float> windloads_z = GenerateWindLoadData();
-
-float WindLoad_x(float y)
+float WindLoad_x(float y, vector<float> const &altitudes,
+                 vector<float> const &windloads_x)
 {
     // cout << "abc" << endl;
     float a = linearInterp(y, altitudes, windloads_x);
@@ -140,7 +139,8 @@ float WindLoad_x(float y)
     return a;
 }
 
-float WindLoad_z(float y)
+float WindLoad_z(float y, vector<float> const &altitudes,
+                 vector<float> const &windloads_z)
 {
     // cout << "abc" << endl;
     float a = linearInterp(y, altitudes, windloads_z);
@@ -158,74 +158,88 @@ float RocketCd(float vy)
     return linearInterp(vy, mach_num, drag_coef);
 }
 
-float RocketDrag(float y, float vy)
+float RocketDrag(float y, float vy, vector<float> const &altitudes,
+                 vector<float> const &rho)
 {  // looks good
-    return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * RocketCd(vy) *
-           Rocket_Cross_Section_Area;
+    return 0.5 * AirDensityFromAltitude(y, altitudes, rho) * pow(vy, 2) *
+           RocketCd(vy) * Rocket_Cross_Section_Area;
 }
 
-float DrogueDrag(float y, float vy)
+float DrogueDrag(float y, float vy, vector<float> const &altitudes,
+                 vector<float> const &rho)
 {
-    return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * DrogueCd *
-           Drogue_Area;
+    return 0.5 * AirDensityFromAltitude(y, altitudes, rho) * pow(vy, 2) *
+           DrogueCd * Drogue_Area;
 }
 
-float MainDrag(float y, float vy)
+float MainDrag(float y, float vy, vector<float> const &altitudes,
+               vector<float> const &rho)
 {
-    return 0.5 * AirDensityFromAltitude(y) * pow(vy, 2) * MainCd * Main_Area;
+    return 0.5 * AirDensityFromAltitude(y, altitudes, rho) * pow(vy, 2) *
+           MainCd * Main_Area;
 }
 
 // stateType = {x pos, x vel, y pos, y vel, z pos, z vel}
 
 // DE1 works!
-void createDE1(const stateType &q, stateType &dqdt, const double t)
+void createDE1(const stateType &q, stateType &dqdt, const double t,
+               vector<float> const &altitudes, vector<float> const &windloads_x,
+               vector<float> const &windloads_z, vector<float> const &rho)
 {
     // cout << "Stage 1: Lift off, Engine in operation..." << endl;
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / mass(t) * WindLoad_x(q[2]);
+    dqdt[1] = 1.0 / mass(t) * WindLoad_x(q[2], altitudes, windloads_x);
     dqdt[2] = q[3];
     dqdt[3] =
-        1.0 / mass(t) * (Thrust(q[2]) - mass(t) * g - RocketDrag(q[2], q[3]));
+        1.0 / mass(t) *
+        (Thrust(q[2]) - mass(t) * g - RocketDrag(q[2], q[3], altitudes, rho));
     dqdt[4] = q[5];
-    dqdt[5] = 1.0 / mass(t) * WindLoad_z(q[2]);
+    dqdt[5] = 1.0 / mass(t) * WindLoad_z(q[2], altitudes, windloads_z);
 }
 
 //
-void createDE2(const stateType &q, stateType &dqdt, const double t)
+void createDE2(const stateType &q, stateType &dqdt, const double t,
+               vector<float> const &altitudes, vector<float> const &windloads_x,
+               vector<float> const &windloads_z, vector<float> const &rho)
 {
     // cout << "Stage 2: Engine turns off, continuing upward..." << endl;
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / DryMass * WindLoad_x(q[2]);
+    dqdt[1] = 1.0 / DryMass * WindLoad_x(q[2], altitudes, windloads_x);
     dqdt[2] = q[3];
-    dqdt[3] = 1.0 / DryMass * (-DryMass * g - RocketDrag(q[2], q[3]));
+    dqdt[3] =
+        1.0 / DryMass * (-DryMass * g - RocketDrag(q[2], q[3], altitudes, rho));
     dqdt[4] = q[5];
-    dqdt[5] = 1.0 / DryMass * WindLoad_z(q[2]);
+    dqdt[5] = 1.0 / DryMass * WindLoad_z(q[2], altitudes, windloads_z);
 }
 
-void createDE3(const stateType &q, stateType &dqdt, const double t)
+void createDE3(const stateType &q, stateType &dqdt, const double t,
+               vector<float> const &altitudes, vector<float> const &windloads_x,
+               vector<float> const &windloads_z, vector<float> const &rho)
 {
     // cout << "Stage 3: Drogue parachute deploys at Apogee..." << endl;
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / DryMass * WindLoad_x(q[2]);
+    dqdt[1] = 1.0 / DryMass * WindLoad_x(q[2], altitudes, windloads_x);
     dqdt[2] = q[3];
     dqdt[3] = 1.0 / DryMass *
-              (RocketDrag(q[2], abs(q[3])) + DrogueDrag(q[2], abs(q[3])) -
-               DryMass * g);
+              (RocketDrag(q[2], abs(q[3]), altitudes, rho) +
+               DrogueDrag(q[2], abs(q[3]), altitudes, rho) - DryMass * g);
     dqdt[4] = q[5];
-    dqdt[5] = 1.0 / DryMass * WindLoad_z(q[2]);
+    dqdt[5] = 1.0 / DryMass * WindLoad_z(q[2], altitudes, windloads_z);
 }
 
-void createDE4(const stateType &q, stateType &dqdt, const double t)
+void createDE4(const stateType &q, stateType &dqdt, const double t,
+               vector<float> const &altitudes, vector<float> const &windloads_x,
+               vector<float> const &windloads_z, vector<float> const &rho)
 {
     // cout << "Stage 4: Main parachute deploys..." <<endl;
     dqdt[0] = q[1];
-    dqdt[1] = 1.0 / DryMass * WindLoad_x(q[2]);
+    dqdt[1] = 1.0 / DryMass * WindLoad_x(q[2], altitudes, windloads_x);
     dqdt[2] = q[3];
-    dqdt[3] =
-        1.0 / DryMass *
-        (RocketDrag(q[2], abs(q[3])) + MainDrag(q[2], abs(q[3])) - DryMass * g);
+    dqdt[3] = 1.0 / DryMass *
+              (RocketDrag(q[2], abs(q[3]), altitudes, rho) +
+               MainDrag(q[2], abs(q[3]), altitudes, rho) - DryMass * g);
     dqdt[4] = q[5];
-    dqdt[5] = 1.0 / DryMass * WindLoad_z(q[2]);
+    dqdt[5] = 1.0 / DryMass * WindLoad_z(q[2], altitudes, windloads_z);
 }
 
 push_back_state_and_time::push_back_state_and_time(vector<stateType> &states,

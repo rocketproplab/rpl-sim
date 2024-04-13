@@ -1,6 +1,5 @@
 #include "PhoenixPositionProvider.h"
 
-using std::stof;
 using std::string;
 
 using std::runtime_error;
@@ -29,9 +28,35 @@ PhoenixPositionProvider::PhoenixPositionProvider()
 
 void PhoenixPositionProvider::process(double deltaTime)
 {
+    using namespace std;
     cout << "--------------" << endl;
     cout << "current internal time is " << currentTime << endl;
     // do the integration, based on the current stage
+    vector<vector<float>> atmos_data = parseFile("atmosisa.csv");
+    vector<float> temperature = atmos_data[0];
+    vector<float> speed_of_sound = atmos_data[1];
+    vector<float> pressure = atmos_data[2];
+    vector<float> rho = atmos_data[3];
+    vector<float> altitudes = getAltitudes();
+    vector<float> windloads_x = GenerateWindLoadData(altitudes, rho);
+    vector<float> windloads_z = GenerateWindLoadData(altitudes, rho);
+
+    // create a lambda function to pass to the integrator that passes references
+    // to the above variables
+    auto DE1 = [&](const stateType &q, stateType &dqdt, const double t) {
+        createDE1(q, dqdt, t, altitudes, windloads_x, windloads_z, rho);
+    };
+    auto DE2 = [&](const stateType &q, stateType &dqdt, const double t) {
+        createDE2(q, dqdt, t, altitudes, windloads_x, windloads_z, rho);
+    };
+
+    auto DE3 = [&](const stateType &q, stateType &dqdt, const double t) {
+        createDE3(q, dqdt, t, altitudes, windloads_x, windloads_z, rho);
+    };
+
+    auto DE4 = [&](const stateType &q, stateType &dqdt, const double t) {
+        createDE4(q, dqdt, t, altitudes, windloads_x, windloads_z, rho);
+    };
 
     if (rocketState == State::PRE_FLIGHT) {
         cout << "in PRE_FLIGHT stage" << endl;
@@ -48,7 +73,7 @@ void PhoenixPositionProvider::process(double deltaTime)
                  << currentTime + step1 << endl;
 
             // use DE1 till fuel runs out
-            integrate_const(stepper, createDE1, currentConditions, currentTime,
+            integrate_const(stepper, DE1, currentConditions, currentTime,
                             currentTime + step1, dt,
                             push_back_state_and_time(allPositions, times));
 
@@ -62,12 +87,12 @@ void PhoenixPositionProvider::process(double deltaTime)
                  << currentTime + step1 + step2 << endl;
 
             // use DE2, since fuel is run out
-            integrate_const(stepper, createDE2, currentConditions,
+            integrate_const(stepper, DE2, currentConditions,
                             currentTime + step1, currentTime + step1 + step2,
                             dt, push_back_state_and_time(allPositions, times));
         } else {
             // use DE1 (burn stage system of equation)
-            integrate_const(stepper, createDE1, currentConditions, currentTime,
+            integrate_const(stepper, DE1, currentConditions, currentTime,
                             currentTime + deltaTime, dt,
                             push_back_state_and_time(allPositions, times));
         }
@@ -77,7 +102,7 @@ void PhoenixPositionProvider::process(double deltaTime)
 
     } else if (rocketState == State::COAST) {
         cout << "in COAST stage" << endl;
-        integrate_const(stepper, createDE2, currentConditions, currentTime,
+        integrate_const(stepper, DE2, currentConditions, currentTime,
                         currentTime + deltaTime, dt,
                         push_back_state_and_time(allPositions, times));
         // update currentConditions for next integration
@@ -85,14 +110,14 @@ void PhoenixPositionProvider::process(double deltaTime)
 
     } else if (rocketState == State::DROGUE) {
         cout << "in DROGUE CHUTE stage" << endl;
-        integrate_const(stepper, createDE3, currentConditions, currentTime,
+        integrate_const(stepper, DE3, currentConditions, currentTime,
                         currentTime + deltaTime, dt,
                         push_back_state_and_time(allPositions, times));
         // update currentConditions for next integration
         currentConditions = allPositions[allPositions.size() - 1];
     } else if (rocketState == State::CHUTE) {
         cout << "in MAIN CHUTE stage" << endl;
-        integrate_const(stepper, createDE4, currentConditions, currentTime,
+        integrate_const(stepper, DE4, currentConditions, currentTime,
                         currentTime + deltaTime, dt,
                         push_back_state_and_time(allPositions, times));
         // update currentConditions for next integration

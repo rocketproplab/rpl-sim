@@ -44,27 +44,51 @@ const float AvgWindSpeed = 10;  // m/s, average speed of wind of FAR site
 // FUNCTION DECLARATIONS
 
 float mass(float t);
-float TempWindLoad(float y);
-std::vector<float> GenerateWindLoadData();
-float WindLoad_x(float y);
-float WindLoad_z(float y);
+float TempWindLoad(float y, std::vector<float> const &altitudes,
+                   std::vector<float> const &rho);
+std::vector<float> GenerateWindLoadData(std::vector<float> const &altitudes,
+                                        std::vector<float> const &rho);
+float WindLoad_x(float y, std::vector<float> const &altitudes,
+                 std::vector<float> const &windloads_x);
+float WindLoad_z(float y, std::vector<float> const &altitudes,
+                 std::vector<float> const &windloads_z);
 float Thrust(float y);
 float RocketCd(float vy);
-float RocketDrag(float y, float vy);
-float DrogueDrag(float y, float vy);
-float MainDrag(float y, float vy);
+float RocketDrag(float y, float vy, std::vector<float> const &altitudes,
+                 std::vector<float> const &rho);
+float DrogueDrag(float y, float vy, std::vector<float> const &altitudes,
+                 std::vector<float> const &rho);
+float MainDrag(float y, float vy, std::vector<float> const &altitudes,
+               std::vector<float> const &rho);
 std::vector<std::vector<float>> parseFile(const std::string &filename);
 std::vector<float> getAltitudes();
 float linearInterp(float x, std::vector<float> all_x, std::vector<float> all_y);
 float splineInterp(float x, std::vector<float> all_x, std::vector<float> all_y);
-float AirDensityFromAltitude(float x);
+float AirDensityFromAltitude(float x, std::vector<float> const &altitudes,
+                             std::vector<float> const &rho);
 
 typedef boost::array<double, 6> stateType;
 
-void createDE1(const stateType &q, stateType &dqdt, const double t);
-void createDE2(const stateType &q, stateType &dqdt, const double t);
-void createDE3(const stateType &q, stateType &dqdt, const double t);
-void createDE4(const stateType &q, stateType &dqdt, const double t);
+void createDE1(const stateType &q, stateType &dqdt, const double t,
+               std::vector<float> const &altitudes,
+               std::vector<float> const &windloads_x,
+               std::vector<float> const &windloads_z,
+               std::vector<float> const &rho);
+void createDE2(const stateType &q, stateType &dqdt, const double t,
+               std::vector<float> const &altitudes,
+               std::vector<float> const &windloads_x,
+               std::vector<float> const &windloads_z,
+               std::vector<float> const &rho);
+void createDE3(const stateType &q, stateType &dqdt, const double t,
+               std::vector<float> const &altitudes,
+               std::vector<float> const &windloads_x,
+               std::vector<float> const &windloads_z,
+               std::vector<float> const &rho);
+void createDE4(const stateType &q, stateType &dqdt, const double t,
+               std::vector<float> const &altitudes,
+               std::vector<float> const &windloads_x,
+               std::vector<float> const &windloads_z,
+               std::vector<float> const &rho);
 
 struct push_back_state_and_time {
     std::vector<stateType> &m_states;

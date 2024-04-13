@@ -1,4 +1,25 @@
+# Test GitIgnore
 test/
 build/
 Eigen/
 CMakeLists.txt
+# Project GitIgnore
+.DS_Store
+src/.DS_Store
+test/.DS_Store
+.vscode
+rpl-sim
+build/*
+
+# CMake Ignore
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps

@@ -31,3 +31,15 @@ int main(int ac, char *av[])
         std::cout << "Received " << line << std::endl;
         response.consume(msg_len);
     }
+    
+    ParseSimParamsResult result = get_params(ac, av);
+    SimParams params = result.sim_params;
+    DataLog data;
+
+    data.write_to_file(params.output_path);
+
+    if (result.exit_code != EXIT_CODE_OK) {
+        return result.exit_code;
+    }
+    return EXIT_CODE_OK;
+}

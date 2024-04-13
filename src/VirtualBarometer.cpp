@@ -19,5 +19,5 @@ void VirtualBarometer::process(double deltatime) {
 double VirtualBarometer::get_reported_altitude() {
     double rand = rng.operator();
     rand /= rng.max();
-    return current_position += noise * rand;
+    return current_position + noise * rand;
 }

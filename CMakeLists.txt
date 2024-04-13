@@ -15,5 +15,5 @@ set(TARGET_SRC
 add_subdirectory(lib/Catch2)
 
 # These tests can use the Catch2-provided main
-add_executable(tests src/test.cpp)
+add_executable(tests src/fluid_engine_sim/test.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)

@@ -108,10 +108,9 @@ ParseSimParamsResult get_params(int argC, char *argV[])
     if (result.exit_code != EXIT_CODE_OK) {
         return result;
     }
-    std::string output_path_str =
-        cli_parse_result.vm["output"].as<std::string>();
 
-    result.sim_params.output_path = output_path_str;
+    result.sim_params.output_path =
+        cli_parse_result.vm["output"].as<std::string>();
 
     return result;
 }

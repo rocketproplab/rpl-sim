@@ -31,7 +31,7 @@ int main(int ac, char *av[])
         std::cout << "Received " << line << std::endl;
         response.consume(msg_len);
     }
-    
+
     ParseSimParamsResult result = get_params(ac, av);
     SimParams params = result.sim_params;
     DataLog data;

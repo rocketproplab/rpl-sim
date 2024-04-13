@@ -9,7 +9,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -pthread")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -46,12 +46,13 @@ FetchContent_MakeAvailable(Eigen3)
 # TODO: Possibly use an installed Boost rather than Boost included in the source.
 set(BOOST_ENABLE_CMAKE ON)
 #set(BOOST_INCLUDEDIR "./lib/boost_1_82_0")
-find_package(Boost 1.74 REQUIRED COMPONENTS program_options) # Expects environmental variable BOOST_INCLUDEDIR
+find_package(Boost 1.74 REQUIRED COMPONENTS program_options regex) # Expects environmental variable BOOST_INCLUDEDIR
 
 ##############################################################################
 # LINK LIBRARIES
 ##############################################################################
 
+# include_directories(${BOOST_INCLUDE_DIRS})
 include_directories(src)
 link_directories(src)
 
@@ -69,7 +70,7 @@ add_executable(
 	${RPLSIM_FILES}
 )
 
-target_link_libraries(main_exe LINK_PUBLIC Boost::boost Boost::program_options)
+target_link_libraries(main_exe LINK_PUBLIC Boost::boost Boost::program_options Boost::regex)
 target_link_libraries(main_exe PRIVATE Eigen3::Eigen)
 
 ##############################################################################

@@ -1,0 +1,12 @@
+AllowShortBlocksOnASingleLine: false
+BasedOnStyle: Google
+InsertBraces: true
+BraceWrapping:
+  AfterFunction: true
+BreakBeforeBraces: Custom
+ColumnLimit: 80
+DerivePointerAlignment: false
+IndentCaseLabels: false
+IndentWidth: 4
+PointerAlignment: Right
+BreakAfterJavaFieldAnnotations: true

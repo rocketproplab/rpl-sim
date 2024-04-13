@@ -109,11 +109,8 @@ ParseSimParamsResult get_params(int argC, char *argV[])
         return result;
     }
 
-    if (result.vm.count("output-file")) {
-        result.sim_params.output_path =
-            result.vm["output-file"].as<std::string>();
-    }
-    // TODO load and parse JSON, configs...
+    result.sim_params.output_path =
+        cli_parse_result.vm["output"].as<std::string>();
 
     return result;
 }

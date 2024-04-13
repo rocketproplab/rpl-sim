@@ -8,7 +8,7 @@
 int main(int ac, char *av[])
 {
     boost::asio::io_context ioctx;
-    boost::asio::serial_port port(ioctx, "COM3");
+    boost::asio::serial_port port(ioctx, "/dev/ttyS3");
     boost::asio::streambuf response;
     std::size_t msg_len;
 
@@ -30,6 +30,7 @@ int main(int ac, char *av[])
             boost::asio::buffers_begin(response.data()) + msg_len);
         std::cout << "Received " << line << std::endl;
         response.consume(msg_len);
+        msg++;
     }
 
     ParseSimParamsResult result = get_params(ac, av);

@@ -1,3 +1,8 @@
+# Test GitIgnore
+test/
+build/
+Eigen/
+CMakeLists.txt
 # Project GitIgnore
 .DS_Store
 src/.DS_Store

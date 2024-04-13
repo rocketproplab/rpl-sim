@@ -1,8 +1,6 @@
-
-#include "exitCodeDefines.hpp"
-
 #include "SimParams.hpp"
-
+#include "exitCodeDefines.hpp"
+#include "output_types.hpp"
 #include <iostream>
 #include <string>
 #include <boost/asio.hpp>
@@ -33,17 +31,3 @@ int main(int ac, char *av[])
         std::cout << "Received " << line << std::endl;
         response.consume(msg_len);
     }
-    
-    
-
-
-    ParseSimParamsResult result = get_params(ac, av);
-
-    if (result.exit_code != EXIT_CODE_OK) { return result.exit_code; }
-
-
-
-    return EXIT_CODE_OK;
-}
-
-

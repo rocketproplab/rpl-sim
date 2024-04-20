@@ -19,6 +19,7 @@ struct CliParseResult {
 struct SimParams {
     std::string init_state_path;
     std::string output_path;
+    std::string serial_port;
 };
 
 struct ParseSimParamsResult {
@@ -34,7 +35,9 @@ po::options_description get_options_description()
         "init-state,i", po::value<std::string>()->required(),
         "path of initial state configuration file")(
         "output,o", po::value<std::string>()->required(),
-        "path of simulator output file");
+        "path of simulator output file")(
+        "serial,s", po::value<std::string>()->default_value("NUL"),
+        "name of serial port, if using");
 
     return options;
 }
@@ -112,6 +115,8 @@ ParseSimParamsResult get_params(int argC, char *argV[])
     result.sim_params.output_path =
         cli_parse_result.vm["output"].as<std::string>();
 
+    result.sim_params.serial_port = 
+        cli_parse_result.vm["serial"].as<std::string>();
     return result;
 }
 

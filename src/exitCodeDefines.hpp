@@ -7,5 +7,6 @@
        // Help was displayed, simulator did not run.
 #define EXIT_CODE_LINE_ARGUMENT_ERROR \
     2  // For incorrect command line arguments.
-
+#define EXIT_CODE_INVALID_SERIAL \
+    4  // For invalid serial ports.
 #endif /* ERROR_CODE_DEFINES_H */

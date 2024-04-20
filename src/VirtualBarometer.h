@@ -14,4 +14,5 @@ class VirtualBarometer {
         Vector3 current_position;
         PhoenixPositionProvider position_provider;
         std::default_random_engine rng;
+        std::uniform_real_distribution<> rng_provider;
 };

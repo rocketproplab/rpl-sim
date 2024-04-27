@@ -1,13 +1,14 @@
 #include "VirtualBarometer.h"
 
 VirtualBarometer::VirtualBarometer(long rs, double alt, double ns): 
-random_seed {rs}, altitude_of_launch_site {alt}, noise {ns} {
+    random_seed{rs}, altitude_of_launch_site{alt}, noise{ns}
+{
     // initialize position provider
     position_provider {};
     current_position {0, 0, altitude_of_launch_site};
 
     // initialize random number generator
-    rng {};
+    rng = PhoenixPositionProvider {};
     rng.seed(random_seed);
     rng_provider {-noise, noise};
 };

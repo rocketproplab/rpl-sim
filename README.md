@@ -38,3 +38,11 @@ We do **not** recommend using a package manager for this dependency.
 
 ### Code Style
 Follow [Google's C++ style guidelines](https://google.github.io/styleguide/cppguide.html).
+
+
+#### Building Docker Image
+```docker build -t rpl-sim .```
+
+#### Running Docker Image
+```docker run --rm rpl-sim```
+

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project(rpl-sim)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
@@ -45,9 +45,8 @@ FetchContent_MakeAvailable(Eigen3)
 # Fetch Boost from included source
 # TODO: Possibly use an installed Boost rather than Boost included in the source.
 set(BOOST_ENABLE_CMAKE ON)
-#set(BOOST_INCLUDEDIR "./lib/boost_1_82_0")
+#set(BOOST_INCLUDEDIR "./lib/boost_1_82_0/")
 find_package(Boost 1.74 REQUIRED COMPONENTS program_options) # Expects environmental variable BOOST_INCLUDEDIR
-
 ##############################################################################
 # LINK LIBRARIES
 ##############################################################################

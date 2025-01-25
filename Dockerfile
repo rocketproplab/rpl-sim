@@ -34,5 +34,7 @@ RUN cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON
 RUN cmake --build build
 
 # Set the default command to run the main executable
-CMD ["build/main_exe"]
+# CMD ["build/main_exe"]
 
+# Run in SSH Mode
+CMD ["sh", "-c", "cd build && ./tests"]

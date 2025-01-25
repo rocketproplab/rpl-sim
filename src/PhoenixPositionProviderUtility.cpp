@@ -99,11 +99,11 @@ vector<float> convert_to_ms(vector<float> mach_data)
     return toReturn;
 }
 
-vector<vector<float>> mach_drag_data = parseFile("mach_vs_cd.csv");
+vector<vector<float>> mach_drag_data = parseFile("/app/build/mach_vs_cd.csv");
 vector<float> mach_num = convert_to_ms(mach_drag_data[0]);
 vector<float> drag_coef = mach_drag_data[1];
 
-vector<vector<float>> thrust_curve = parseFile("thrust_curve.csv");
+vector<vector<float>> thrust_curve = parseFile("/app/build/thrust_curve.csv");
 vector<float> height = thrust_curve[0];
 vector<float> thrust = thrust_curve[1];
 

@@ -2,11 +2,13 @@
 
 using std::string;
 using std::vector;
-
 using std::endl;
 
-// the first row of atmosisa csv file is T, second is a, third is P, fourth is
-// rho
+const std::string mach_vs_cd_csv = "/app/build/mach_vs_cd.csv";
+const std::string thrust_curve_csv = "/app/build/thrust_curve.csv";
+
+    // the first row of atmosisa csv file is T, second is a, third is P, fourth
+    // is rho
 
 vector<vector<float>> parseFile(const string &filename)
 {
@@ -99,11 +101,11 @@ vector<float> convert_to_ms(vector<float> mach_data)
     return toReturn;
 }
 
-vector<vector<float>> mach_drag_data = parseFile("/app/build/mach_vs_cd.csv");
-vector<float> mach_num = convert_to_ms(mach_drag_data[0]);
+vector<vector<float>> mach_drag_data = parseFile(mach_vs_cd_csv, "csv");
+vector<float> mach_num = convert_to_ms(mach_drag_data[0], "csv");
 vector<float> drag_coef = mach_drag_data[1];
 
-vector<vector<float>> thrust_curve = parseFile("/app/build/thrust_curve.csv");
+vector<vector<float>> thrust_curve = parseFile(thrust_curve_csv, "csv");
 vector<float> height = thrust_curve[0];
 vector<float> thrust = thrust_curve[1];
 

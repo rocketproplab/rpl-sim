@@ -95,6 +95,13 @@ add_custom_command(
 	$<TARGET_FILE_DIR:main_exe>/thrust_curve.csv 
 )
 
+add_custom_command(
+	TARGET main_exe PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+	${CMAKE_SOURCE_DIR}/data/sim_data_nowind.csv
+	$<TARGET_FILE_DIR:main_exe>/sim_data_nowind.csv
+)
+
 ##############################################################################
 # TEST INFRASTRUCTURE
 ##############################################################################

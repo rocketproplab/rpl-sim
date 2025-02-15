@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../src/PhoenixPositionProvider.h"
+#include "../src/LinearInterpolatePropulsion.h"
 
 //(1.0)
 TEST_CASE("In pre-flight stage", "Pre-flight")
@@ -172,4 +173,14 @@ TEST_CASE("Testing Deployment Order")
     PhoenixPositionProvider ppp3{};
     ppp3.ignite();
     REQUIRE_THROWS_AS(ppp3.chute(), std::runtime_error);
+}
+
+/**
+ * LinearInterpolatePropulsion.cpp Testing
+ */
+
+// (12.0)
+TEST_CASE(){
+    result = system("./LinearInterpolatePropulsion");
+    REQUIRE(result == 0);
 }

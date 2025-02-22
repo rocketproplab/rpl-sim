@@ -1,6 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include "../src/PhoenixPositionProvider.h"
+#include "../src/LinearInterpolatePropulsion.h"
 
 //(1.0)
 TEST_CASE("In pre-flight stage", "Pre-flight")
@@ -172,4 +174,69 @@ TEST_CASE("Testing Deployment Order")
     PhoenixPositionProvider ppp3{};
     ppp3.ignite();
     REQUIRE_THROWS_AS(ppp3.chute(), std::runtime_error);
+}
+
+/**
+ * LinearInterpolatePropulsion.cpp Testing
+ */
+
+// (12.0)
+//checks that the csv correctly is output and has the right values
+TEST_CASE(){
+    //checks if the function exits successfully
+    double stepSize = 0.1;
+    int test = start(stepSize);
+    REQUIRE(test == 0);
+    std::string filename = "discrete_data_" + std::to_string(stepSize) +".csv";
+    std::ifstream file(filename);
+    //checks if file is open
+    REQUIRE(file.is_open() == true);
+    
+    //checks that each line has the right number of values and correct step size
+    std::string line;
+    double step = 0;
+    while (std::getline(file, line)) {
+        std::vector<double> row;
+        std::stringstream ss(line);
+        std::string cell;
+
+        while (std::getline(ss, cell, ',')) {
+            row.push_back(stod(cell));
+        }
+        REQUIRE(row[0] == Catch::Approx(step));
+        REQUIRE(row.size() == Catch::Approx(3));
+        step += stepSize;
+    }
+    file.close();
+}
+    
+// (13.0)
+//checks the math behind the interpolation function
+TEST_CASE("Testing interpolate function") {
+    REQUIRE(interpolate(0.0, 10.0, 0.0) == Catch::Approx(0.0));
+    REQUIRE(interpolate(0.0, 10.0, 1.0) == Catch::Approx(10.0));
+    REQUIRE(interpolate(0.0, 10.0, 0.5) == Catch::Approx(5.0));
+    REQUIRE(interpolate(-5.0, 5.0, 0.5) == Catch::Approx(0.0));
+    REQUIRE(interpolate(2.0, 8.0, 0.25) == Catch::Approx(3.5));
+}
+
+// (14.0)
+//Tests the math behind the linearInterpolate function
+TEST_CASE("Testing linearInterpolate function") {
+    std::vector<double> start = {0.0, 1.0, 100.0};
+    std::vector<double> end = {10.0, 3.0, 200.0};
+    
+    std::vector<double> result = linearInterpolate(start, end, 5.0);
+    
+    REQUIRE(result[0] == Catch::Approx(5.0));
+    REQUIRE(result[1] == Catch::Approx(2.0));
+    REQUIRE(result[2] == Catch::Approx(150.0)); 
+    
+    result = linearInterpolate(start, end, 0.0);
+    REQUIRE(result[1] == Catch::Approx(1.0));
+    REQUIRE(result[2] == Catch::Approx(100.0));
+    
+    result = linearInterpolate(start, end, 10.0);
+    REQUIRE(result[1] == Catch::Approx(3.0));
+    REQUIRE(result[2] == Catch::Approx(200.0));
 }

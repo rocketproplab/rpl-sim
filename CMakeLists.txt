@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # PROJECT FILES
 ##############################################################################
 
-set(RPLSIM_FILES src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp src/Vector3.cpp)
+set(RPLSIM_FILES src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp src/Vector3.cpp src/LinearInterpolatePropulsion.cpp)
 
 ##############################################################################
 # CATCH2 AND EIGEN -- REMOTE SOURCE
@@ -63,7 +63,7 @@ include_directories(lib/optparse)
 ##############################################################################
 
 add_executable(
-	main_exe 
+	main_exe
 	src/main.cpp
 	${RPLSIM_FILES}
 )
@@ -93,6 +93,13 @@ add_custom_command(
 	COMMAND ${CMAKE_COMMAND} -E copy
 	${CMAKE_SOURCE_DIR}/data/thrust_curve.csv 
 	$<TARGET_FILE_DIR:main_exe>/thrust_curve.csv 
+)
+
+add_custom_command(
+	TARGET main_exe PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+	${CMAKE_SOURCE_DIR}/data/sim_data_nowind.csv
+	$<TARGET_FILE_DIR:main_exe>/sim_data_nowind.csv
 )
 
 ##############################################################################

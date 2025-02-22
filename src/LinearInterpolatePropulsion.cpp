@@ -3,31 +3,38 @@ using namespace std;
 /*
 TODO Add documentation
 */
+
+double interpolate(double a, double b, double f)
+{
+    return a * (1.0 - f) + (b * f);
+}
+/**
+* Linearly interpolates two points to get a correct value in the middle
+*/
 vector<double> linearInterpolate(vector<double> start, vector<double> end, double currentStep){
+    
     double t1 = start[0], acceleration1 = start[1], pressure1 = start[2];
     double t2 = end[0], acceleration2 = end[1], pressure2 = end[2];
     vector<double> interpolatedData;
     interpolatedData.push_back(currentStep);
     double timeDiff = (currentStep - t1) / (t2 - t1);
-    interpolatedData.push_back(lerp(acceleration1, acceleration2, timeDiff));
-    interpolatedData.push_back(lerp(pressure1, pressure2, timeDiff));
+    interpolatedData.push_back(interpolate(acceleration1, acceleration2, timeDiff));
+    interpolatedData.push_back(interpolate(pressure1, pressure2, timeDiff));
     return interpolatedData;  
 }
 /**
  * @input: data- data read from csv file
- *       : stepsize- how often we want 
+ *       : stepsize- how often we want there to be a data point ex: 0.1 = every .1 second 
  */
-//@TODO use start as index and use while loop to iterate to currStep, avoid assigning vectors
-// each loop in the for loop
 vector<vector<double>> interpolateData(vector<vector<double>> data, double stepSize){
-    vector<vector<double>> discreteData;
+     vector<vector<double>> discreteData;
     // @TODO use alr created interpolate function
     double currentStep = 0;
     vector<double> start;
     vector<double> end;
 
     //iterate through each csv value
-    for(int i = 0; i < data.size(); i++){
+    for(long unsigned int i = 0; i < data.size(); i++){
         if(currentStep > data[data.size() - 1][0]){
             break;
         }
@@ -57,7 +64,9 @@ vector<vector<double>> interpolateData(vector<vector<double>> data, double stepS
     return discreteData;
     
 }
-    
+ /**
+  * Creates a csv from a data vector. This should be the linearly interpolated data 
+  */   
 void writeToCSV(const std::vector<std::vector<double>>& data, const std::string& filename) {
     // Create output file in data directory
     std::ofstream outputFile(filename);
@@ -81,10 +90,8 @@ void writeToCSV(const std::vector<std::vector<double>>& data, const std::string&
     outputFile.close();
     std::cout << "CSV file created: " << filename << std::endl;
 }
-
-int main()
-{
-    std::cout << "RUNNING FILE" << std::endl;
+int start(double stepSize){
+    //std::cout << "RUNNING FILE" << std::endl;
     std::string filename = "sim_data_nowind.csv";
     
     std::ifstream file(filename);
@@ -98,12 +105,13 @@ int main()
     std::string line;
 
     while (std::getline(file, line)) {
+        //std::cout << "whiling" << std::endl;
         std::vector<double> row;
         std::stringstream ss(line);
         std::string cell;
 
         while (std::getline(ss, cell, ',')) {
-            row.push_back(stold(cell));
+            row.push_back(stod(cell));
         }
 
         data.push_back(row);
@@ -111,10 +119,8 @@ int main()
 
     file.close();
     
-    //
-    std::cout << "RUNNING!!!!" << std::endl;
-    vector<vector<double>> discreteData = interpolateData(data, 0.1);
+    //std::cout << "RUNNING!!!!" << std::endl;
+    vector<vector<double>> discreteData = interpolateData(data, stepSize);
     writeToCSV(discreteData, "discrete_data.csv");
-    
     return 0;
 }

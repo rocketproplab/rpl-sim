@@ -6,17 +6,16 @@
 #include <filesystem>
 #include <cmath>
 
-class LinearInterpolatePropulsion {
-    public:
+    //math behind interpolation
+    double interpolate(double a, double b, double f);
+    
     //Linearly interpolates 2 vectors
-    vector<double> linearInterpolate(vector<double> start, vector<double> end, double currentStep);
+    std::vector<double> linearInterpolate(std::vector<double> start, std::vector<double> end, double currentStep);
 
     //finds the 2 data points for the next linear interpolation
-    vector<vector<double>> interpolateData(vector<vector<double>> data, double stepSize);
+    std::vector<std::vector<double>> interpolateData(std::vector<std::vector<double>> data, double stepSize);
 
     //writes the final data to a CSV
     void writeToCSV(const std::vector<std::vector<double>>& data, const std::string& filename);
 
-    private:
-    
-};
+    int start(double stepSize);

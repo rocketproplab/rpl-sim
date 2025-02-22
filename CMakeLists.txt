@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # PROJECT FILES
 ##############################################################################
 
-set(RPLSIM_FILES src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp src/Vector3.cpp)
+set(RPLSIM_FILES src/PhoenixPositionProvider.cpp src/PhoenixPositionProviderUtility.cpp src/Vector3.cpp src/LinearInterpolatePropulsion.cpp)
 
 ##############################################################################
 # CATCH2 AND EIGEN -- REMOTE SOURCE
@@ -63,7 +63,7 @@ include_directories(lib/optparse)
 ##############################################################################
 
 add_executable(
-	main_exe 
+	main_exe
 	src/main.cpp
 	${RPLSIM_FILES}
 )

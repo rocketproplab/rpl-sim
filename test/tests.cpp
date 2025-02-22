@@ -183,13 +183,12 @@ TEST_CASE("Testing Deployment Order")
 // (12.0)
 //checks that the csv correctly is output and has the right values
 TEST_CASE(){
-    std::cout << "about to run" << std::endl;
     //checks if the function exits successfully
     double stepSize = 0.1;
     int test = start(stepSize);
     REQUIRE(test == 0);
-
-    std::ifstream file("discrete_data.csv");
+    std::string filename = "discrete_data_" + std::to_string(stepSize) +".csv";
+    std::ifstream file(filename);
     //checks if file is open
     REQUIRE(file.is_open() == true);
     
@@ -212,7 +211,7 @@ TEST_CASE(){
 }
     
 // (13.0)
-//checks the math behind linear interpolation
+//checks the math behind the interpolation function
 TEST_CASE("Testing interpolate function") {
     REQUIRE(interpolate(0.0, 10.0, 0.0) == Catch::Approx(0.0));
     REQUIRE(interpolate(0.0, 10.0, 1.0) == Catch::Approx(10.0));
@@ -222,6 +221,7 @@ TEST_CASE("Testing interpolate function") {
 }
 
 // (14.0)
+//Tests the math behind the linearInterpolate function
 TEST_CASE("Testing linearInterpolate function") {
     std::vector<double> start = {0.0, 1.0, 100.0};
     std::vector<double> end = {10.0, 3.0, 200.0};

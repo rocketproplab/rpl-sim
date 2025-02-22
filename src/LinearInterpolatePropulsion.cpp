@@ -121,6 +121,7 @@ int start(double stepSize){
     
     //std::cout << "RUNNING!!!!" << std::endl;
     vector<vector<double>> discreteData = interpolateData(data, stepSize);
-    writeToCSV(discreteData, "discrete_data.csv");
+    std::string newFilename = "discrete_data_" + std::to_string(stepSize) + ".csv";
+    writeToCSV(discreteData, newFilename);
     return 0;
 }

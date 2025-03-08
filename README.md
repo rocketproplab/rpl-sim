@@ -48,7 +48,11 @@ Follow [Google's C++ style guidelines](https://google.github.io/styleguide/cppgu
 ```docker build -t rpl-sim .```
 
 #### Running Docker Image
-```docker run --rm rpl-sim```
+To run the tests run: 
+```docker run --rm -it rpl-sim tests```
+
+To run main run:
+```docker run --rm -it rpl-sim main```
 
 ### Expected Test Output
 <img src="assets\expected-test-output.png" alt="description" style="width:30%;">

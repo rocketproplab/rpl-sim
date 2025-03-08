@@ -33,11 +33,9 @@ RUN cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON
 # Build the project
 RUN cmake --build build
 
-# Set the default command to run the main executable
-# CMD ["build/main_exe"]
+# Copy the entrypoint script and make it executable
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-# Run in SSH Mode
-#CMD ["sh", "-c", "cd build && ./tests && tail -f /dev/null"]
-
-# Run the main executable (built from src/main.cpp) and then keep the container alive
-CMD ["sh", "-c", "cd build && ./main_exe && tail -f /dev/null"]
+# Set the entrypoint so we can choose what to run at container startup.
+ENTRYPOINT ["/app/entrypoint.sh"]

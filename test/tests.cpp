@@ -1,8 +1,13 @@
+//Imports needed to test
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
+#include <sstream>
 
+//Imports the tested functions
 #include "../src/PhoenixPositionProvider.h"
 #include "../src/LinearInterpolatePropulsion.h"
+#include "Physics.hpp"
+
 //(1.0)
 TEST_CASE("In pre-flight stage", "Pre-flight")
 {
@@ -238,4 +243,122 @@ TEST_CASE("Testing linearInterpolate function") {
     result = linearInterpolate(start, end, 10.0);
     REQUIRE(result[1] == Catch::Approx(3.0));
     REQUIRE(result[2] == Catch::Approx(200.0));
+}
+
+// ------------------------------
+// Tests for addNoise function
+// ------------------------------
+// (15.0)
+TEST_CASE("addNoise returns original value when noise factor is zero", "[Physics]") {
+    double value = 10.0;
+    double noiseFactor = 0.0;
+    double result = Physics::addNoise(value, noiseFactor);
+    // With zero noise factor, the value should remain unchanged.
+    REQUIRE(result == Catch::Approx(value));
+}
+
+// (16.0)
+TEST_CASE("addNoise with value zero always returns zero", "[Physics]") {
+    double value = 0.0;
+    double noiseFactor = 0.1;
+    double result = Physics::addNoise(value, noiseFactor);
+    REQUIRE(result == Catch::Approx(0.0));
+}
+
+// (17.0)
+TEST_CASE("addNoise returns value within relative bounds", "[Physics]") {
+    double value = 20.0;
+    double noiseFactor = 0.1;
+    double result = Physics::addNoise(value, noiseFactor);
+    // the formula is: result = value + (value * noiseFactor * noise)
+    // with noise in [-1,1], so the minimum is value*(1 - noiseFactor)
+    // and maximum is value*(1 + noiseFactor)
+    double lowerBound = value * (1 - noiseFactor);
+    double upperBound = value * (1 + noiseFactor);
+    INFO("Result: " << result << ", Expected between " << lowerBound << " and " << upperBound);
+    REQUIRE(result >= lowerBound);
+    REQUIRE(result <= upperBound);
+}
+
+// ------------------------------
+// Tests for updateState function
+// ------------------------------
+// (18.0)
+TEST_CASE("updateState with zero dt returns same state", "[Physics]") {
+    Physics::XY_State initState;
+    initState.position = Vector3(1.0, 2.0, 3.0);
+    initState.velocity = Vector3(4.0, 5.0, 6.0);
+    
+    double dt = 0.0;
+    double sensorAcceleration = 10.0;
+    double sensorAirDensity = 1.0;  // Not used in integration.
+    
+    Physics::XY_State newState = Physics::updateState(initState, dt, sensorAcceleration, sensorAirDensity);
+    
+    //with dt=0, both position and velocity should remain unchanged
+    REQUIRE(newState.position.x == Catch::Approx(initState.position.x));
+    REQUIRE(newState.position.y == Catch::Approx(initState.position.y));
+    REQUIRE(newState.position.z == Catch::Approx(initState.position.z));
+    
+    REQUIRE(newState.velocity.x == Catch::Approx(initState.velocity.x));
+    REQUIRE(newState.velocity.y == Catch::Approx(initState.velocity.y));
+    REQUIRE(newState.velocity.z == Catch::Approx(initState.velocity.z));
+}
+
+// (19.0)
+TEST_CASE("updateState updates vertical state within expected range", "[Physics]") {
+    // starting from a zero state
+    Physics::XY_State initState;
+    initState.position = Vector3(0, 0, 0);
+    initState.velocity = Vector3(0, 0, 0);
+    
+    double dt = 1.0;
+    double sensorAcceleration = 10.0;  // m/s^2 from CSV.
+    double sensorAirDensity = 1.0;       // not used.
+    
+    Physics::XY_State newState = Physics::updateState(initState, dt, sensorAcceleration, sensorAirDensity);
+    
+    // the update uses: newVelocity.y = 0 + (noisyAcceleration * dt)
+    // where noisyAcceleration = sensorAcceleration * (1 + noiseFactor * noise)
+    // with noiseFactor = 0.1 and noise in [-1,1], newVelocity.y should be between:
+    double expected = sensorAcceleration * dt; // 10.0
+    double lowerBound = expected * 0.9;          // 9.0
+    double upperBound = expected * 1.1;          // 11.0
+    
+    INFO("newState.velocity.y: " << newState.velocity.y);
+    REQUIRE(newState.velocity.y >= lowerBound);
+    REQUIRE(newState.velocity.y <= upperBound);
+    
+    // since newState.position.y = 0 + newVelocity.y * dt, it should equal newState.velocity.y
+    REQUIRE(newState.position.y == Catch::Approx(newState.velocity.y));
+}
+
+// (20.0)
+TEST_CASE("updateState works with non-zero initial state", "[Physics]") {
+    // set an initial state with non-zero position and velocity
+    Physics::XY_State initState;
+    initState.position = Vector3(5.0, 5.0, 5.0);
+    initState.velocity = Vector3(1.0, 1.0, 1.0);
+    
+    double dt = 2.0;
+    double sensorAcceleration = 8.0; 
+    double sensorAirDensity = 1.0;
+    
+    Physics::XY_State newState = Physics::updateState(initState, dt, sensorAcceleration, sensorAirDensity);
+    
+    // calculate expected vertical velocity bounds:
+    // newVelocity.y = initState.velocity.y + sensorAcceleration * dt * (1 + noiseFactor * noise)
+    // with noiseFactor = 0.1, the increment should be between 8*2*0.9 and 8*2*1.1
+    double lowerIncrement = sensorAcceleration * dt * 0.9; // 14.4
+    double upperIncrement = sensorAcceleration * dt * 1.1; // 17.6
+    double expectedInitial = initState.velocity.y;         // 1.0
+    double newVelY = newState.velocity.y;
+    
+    INFO("newState.velocity.y: " << newVelY);
+    REQUIRE(newVelY >= expectedInitial + lowerIncrement);
+    REQUIRE(newVelY <= expectedInitial + upperIncrement);
+    
+    // newState.position.y should be initState.position.y + newState.velocity.y * dt
+    double expectedPositionY = initState.position.y + newState.velocity.y * dt;
+    REQUIRE(newState.position.y == Catch::Approx(expectedPositionY));
 }

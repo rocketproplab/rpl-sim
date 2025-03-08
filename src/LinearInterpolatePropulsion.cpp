@@ -102,7 +102,7 @@ void writeToCSV(const std::vector<std::vector<double>>& data, const std::string&
 /**
  * Helper function that starts the csv conversion
  */
-int start(double stepSize){
+int start_csv(double stepSize){
     //open the csv file
     std::string filename = "sim_data_nowind.csv";
     std::ifstream file(filename);

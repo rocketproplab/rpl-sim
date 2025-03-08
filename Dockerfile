@@ -37,4 +37,7 @@ RUN cmake --build build
 # CMD ["build/main_exe"]
 
 # Run in SSH Mode
-CMD ["sh", "-c", "cd build && ./tests"]
+#CMD ["sh", "-c", "cd build && ./tests && tail -f /dev/null"]
+
+# Run the main executable (built from src/main.cpp) and then keep the container alive
+CMD ["sh", "-c", "cd build && ./main_exe && tail -f /dev/null"]

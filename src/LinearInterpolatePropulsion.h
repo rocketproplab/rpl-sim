@@ -19,4 +19,4 @@
     void writeToCSV(const std::vector<std::vector<double>>& data, const std::string& filename);
 
     //Function to easily allow a csv to be generated based on the step size
-    int start(double stepSize);
+    int start_csv(double stepSize);

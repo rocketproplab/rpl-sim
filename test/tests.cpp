@@ -3,7 +3,6 @@
 
 #include "../src/PhoenixPositionProvider.h"
 #include "../src/LinearInterpolatePropulsion.h"
-
 //(1.0)
 TEST_CASE("In pre-flight stage", "Pre-flight")
 {
@@ -185,7 +184,7 @@ TEST_CASE("Testing Deployment Order")
 TEST_CASE(){
     //checks if the function exits successfully
     double stepSize = 0.1;
-    int test = start(stepSize);
+    int test = start_csv(stepSize);
     REQUIRE(test == 0);
     std::string filename = "discrete_data_" + std::to_string(stepSize) +".csv";
     std::ifstream file(filename);

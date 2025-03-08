@@ -2,6 +2,7 @@
 #define PHYSICS_HPP
 
 #include "Vector3.hpp"
+#include <random>
 
 namespace Physics {
 
@@ -36,7 +37,7 @@ namespace Physics {
      * @param noiseFactor The relative noise factor (e.g., 0.1 for 10% noise).
      * @return double The sensor value with noise added.
      */
-    double addNoise(double value, double noiseFactor)
+    double addNoise(double value, double noiseFactor);
 }
 
 #endif

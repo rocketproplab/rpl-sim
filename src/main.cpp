@@ -12,22 +12,6 @@
 #include <string>
 
 double STEP_SIZE = 0.1;
-/**
-int main(int ac, char *av[])
-{
-    ParseSimParamsResult result = get_params(ac, av);
-    SimParams params = result.sim_params;
-    DataLog data;
-
-    data.write_to_file(params.output_path);
-
-    if (result.exit_code != EXIT_CODE_OK) {
-        return result.exit_code;
-    }
-
-    return EXIT_CODE_OK;
-}
- */
 
 std::vector<std::string> split(const std::string &s, char delimiter) {
     std::vector<std::string> tokens;
@@ -48,6 +32,11 @@ int main() {
         std::cerr << "Error: Unable to open " << filename << std::endl;
         return 1;
     }
+    
+    /**
+     NOTE: Calculating velocity and position is responsibility of the flight computer
+     this is a placeholder to test the function, the completed rpl sim will not calculate these values!
+    */
 
     // open output file for burn stage simulation data
     // csv columns: time, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z

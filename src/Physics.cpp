@@ -4,8 +4,9 @@
 
 namespace Physics {
 
-    // adds relative noise to the given value.
+    // adds relative noise to the given value
     double addNoise(double value, double noiseFactor) {
+        //random noise generator, we can modify this as needed
         static std::random_device rd;
         static std::mt19937 gen(rd());
         std::uniform_real_distribution<> dis(-1.0, 1.0);
@@ -13,8 +14,8 @@ namespace Physics {
         return value + (value * noiseFactor * noise);
     }
 
-    // Its assumed that the acceleration from the CSV is already "complete" (i.e. all effects are included).
-    // We update only the vertical (y) component using this acceleration.
+    // Its assumed that the acceleration from the CSV is already "complete" (i.e. all effects are included)
+    // We update only the vertical (y) component using this acceleration
     Physics::XY_State updateState(const XY_State& currentState, double dt, double sensorAcceleration, double sensorAirDensity) {
         // add noise to sensor readings (using 10% relative noise as an example)
         double noisyAcceleration = addNoise(sensorAcceleration, 0.1);
